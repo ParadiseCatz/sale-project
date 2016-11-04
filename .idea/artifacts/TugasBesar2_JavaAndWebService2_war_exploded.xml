@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="TugasBesar2_JavaAndWebService2:war exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/TugasBesar2_JavaAndWebService2_war_exploded</output-path>
+    <root id="root">
+      <element id="javaee-facet-resources" facet="TugasBesar2_JavaAndWebService2/web/Web" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="TugasBesar2_JavaAndWebService2" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>
