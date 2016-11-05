@@ -38,7 +38,7 @@
     <div id="tombol"><input type="submit" class="button" value="REGISTER" id="Register"></div>
 </form>
 
-<p>Already registered? Login <a href="login.php">here</a></p>
+<p>Already registered? Login <a href="login.jsp">here</a></p>
 
 </body>
 </html>

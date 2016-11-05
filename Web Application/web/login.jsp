@@ -26,7 +26,7 @@
 <div id="tombol"><input type="submit" class="button" value="Login"></div>
 </form>
 
-<p>Don't have an account yet? Register <a href="Register.php">here</a></p>
+<p>Don't have an account yet? Register <a href="register.jsp">here</a></p>
 
 
 </body>
