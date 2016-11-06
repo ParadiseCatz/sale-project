@@ -39,6 +39,5 @@
 </form>
 
 <p>Already registered? Login <a href="login.jsp">here</a></p>
-
 </body>
 </html>
