@@ -3,9 +3,9 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 05, 2016 at 11:20 AM
--- Server version: 10.1.10-MariaDB
--- PHP Version: 5.6.19
+-- Generation Time: Nov 07, 2016 at 04:04 PM
+-- Server version: 10.1.16-MariaDB
+-- PHP Version: 7.0.9
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -29,6 +29,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `barang` (
   `id` int(32) NOT NULL,
   `id_penjual` int(32) NOT NULL,
+  `username` varchar(100) NOT NULL,
   `nama_barang` varchar(50) NOT NULL,
   `harga` bigint(64) NOT NULL,
   `deskripsi` varchar(1000) NOT NULL,
@@ -42,9 +43,9 @@ CREATE TABLE `barang` (
 -- Dumping data for table `barang`
 --
 
-INSERT INTO `barang` (`id`, `id_penjual`, `nama_barang`, `harga`, `deskripsi`, `nama_foto`, `waktu_ditambahkan`, `jumlah_like`, `jumlah_dibeli`) VALUES
-(40, 1, 'PS4', 4500000, 'PS4 Console master race', 'image\\57f79dc3b3457.jpg', '2016-10-07 20:06:11', 1, 0),
-(48, 1, 'ps5', 12350000, 'asdlasjdaskl', 'image\\58073ddb9077a.png', '2016-10-19 16:33:15', 0, 1);
+INSERT INTO `barang` (`id`, `id_penjual`, `username`, `nama_barang`, `harga`, `deskripsi`, `nama_foto`, `waktu_ditambahkan`, `jumlah_like`, `jumlah_dibeli`) VALUES
+(40, 1, 'root', 'PS4', 4500000, 'PS4 Console master race', 'image\\57f79dc3b3457.jpg', '2016-10-07 20:06:11', 1, 0),
+(48, 1, 'root', 'ps5', 12350000, 'asdlasjdaskl', 'image\\58073ddb9077a.png', '2016-10-19 16:33:15', 0, 1);
 
 -- --------------------------------------------------------
 
