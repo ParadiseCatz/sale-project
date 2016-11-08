@@ -41,7 +41,6 @@
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
         //add reuqest header
         con.setRequestMethod("POST");
-        con.setRequestProperty("User-Agent", "Mozilla/5.0");
         con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
         String urlParameters = "username=" + username + "&password=" + password;
         // Send post request
@@ -54,32 +53,41 @@
         out.println("Sending POST to " + url);
         out.println(urlParameters);
         out.println("Response Code : " + responseCode);
-        
-        BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
-        String s = br.readLine();
-        out.println("Json = "+s);
-        JSONParser parser = new JSONParser();
-        try {
-            Object obj2 = parser.parse(s);
-            JSONObject jsonObject = (JSONObject) obj2;
-            String token = (String) jsonObject.get("token");
-            Cookie cookietoken = new Cookie("token",token);
-            cookietoken.setMaxAge(60*60*24);
-            out.println("token = " + token);
-            String date = (String) jsonObject.get("expirytime");
-            Cookie cookietime = new Cookie("expirytime",date);
-            cookietime.setMaxAge(60*60*24);
-            response.addCookie(cookietoken);
-            response.addCookie(cookietime);
-            out.println("date = " + date);
-	} catch (FileNotFoundException e) {
-		e.printStackTrace();
-	} catch (IOException e) {
-		e.printStackTrace();
-	} catch (ParseException e) {
-		e.printStackTrace();
-	}
-        
+        if(responseCode == 200){
+            BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            String s = br.readLine();
+            out.println("Json = "+s);
+            JSONParser parser = new JSONParser();
+            try {
+                Object obj2 = parser.parse(s);
+                JSONObject jsonObject = (JSONObject) obj2;
+                String token = (String) jsonObject.get("token");
+                Cookie cookietoken = new Cookie("token",token);
+                cookietoken.setMaxAge(60*60*24);
+                out.println("token = " + token);
+                String date = (String) jsonObject.get("expirytime");
+                Cookie cookietime = new Cookie("expirytime",date);
+                cookietime.setMaxAge(60*60*24);
+                response.addCookie(cookietoken);
+                response.addCookie(cookietime);
+                out.println("date = " + date);
+            } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+            } catch (IOException e) {
+                    e.printStackTrace();
+            } catch (ParseException e) {
+                    e.printStackTrace();
+            }
+            //pindah page ke dashboard
+            /*String site = new String("http://localhost:8080/Web_Application/login.jsp");
+            response.setStatus(response.SC_MOVED_TEMPORARILY);
+            response.setHeader("Location", site);*/
+        }
+        else{
+            String site = new String("http://localhost:8080/Web_Application/login.jsp");
+            response.setStatus(response.SC_MOVED_TEMPORARILY);
+            response.setHeader("Location", site);
+        }
     } 
 %>
 

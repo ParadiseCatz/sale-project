@@ -14,6 +14,8 @@ import java.security.SecureRandom;
 import java.math.BigInteger;
 import java.util.Date;
 import org.json.simple.JSONObject;
+import java.util.*;
+import java.sql.*;
 //import java.util.Calendar;
 
 /**
@@ -86,21 +88,21 @@ public class loginservlet extends HttpServlet {
             response.getWriter().write(obj.toString());
         }
         else{
-            
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Wrong Email or Password !");
         }
         //out.println(buatToken());
-       
-
     }
 
     //akses database untuk mengecek (belum di implementasi)
     public boolean autentikasi(String username, String password) {
-        if(username.equals("root") && password.equals("root")){
+        
+        
+        /*if(username.equals("root") && password.equals("root")){
             return true;
         }
         else{
             return false;
-        }
+        }*/
     }
     
     //membuat expire time dari sekarang 
