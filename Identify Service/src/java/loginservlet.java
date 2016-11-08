@@ -97,12 +97,15 @@ public class loginservlet extends HttpServlet {
     public boolean autentikasi(String username, String password) {
         
         
-        /*if(username.equals("root") && password.equals("root")){
+        
+        /*
+        if(username.equals("root") && password.equals("root")){
             return true;
         }
         else{
             return false;
         }*/
+        return true;
     }
     
     //membuat expire time dari sekarang 
