@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.security.SecureRandom;
 import java.math.BigInteger;
+import java.util.Date;
 import org.json.simple.JSONObject;
 //import java.util.Calendar;
 
@@ -32,11 +33,13 @@ public class loginservlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
+        response.setContentType("application/json;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
             //test token
-            //out.println(buatToken());
+            out.println(buatToken());
+            Date expire = buatExpireTime();
+            out.println(expire.toString());
         }
     }
 
@@ -66,10 +69,9 @@ public class loginservlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
-        response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
-        
+        //processRequest(request, response);
+        response.setContentType("application/json;charset=UTF-8");
+        PrintWriter out = response.getWriter();        
         String email = request.getParameter("username");
         String pass = request.getParameter("password");
         if(autentikasi(email,pass)){
@@ -77,9 +79,14 @@ public class loginservlet extends HttpServlet {
             //buat token secara random
             String token = buatToken();
             obj.put("token", token);
-            //obj.put("expiry time", );
-            obj.put("status", "ok");
-            out.print(obj);
+            Date expire = buatExpireTime();
+            obj.put("expirytime", expire.toString());
+            //obj.put("status", "ok");
+            //out.print(obj);
+            response.getWriter().write(obj.toString());
+        }
+        else{
+            
         }
         //out.println(buatToken());
        
@@ -94,6 +101,14 @@ public class loginservlet extends HttpServlet {
         else{
             return false;
         }
+    }
+    
+    //membuat expire time dari sekarang 
+    public Date buatExpireTime(){
+        Date now = new Date();
+        //expire 1 jam 
+        Date expire = new Date(now.getTime() + (1000 * 60 * 60 * 1));
+        return expire;
     }
     
     //membuat token

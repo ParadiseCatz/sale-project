@@ -6,6 +6,12 @@
 <%@ page import="java.net.HttpURLConnection" %>
 <%@ page import="java.net.URL" %>
 <%@ page import="javax.net.ssl.HttpsURLConnection" %>
+<%@ page import="org.json.simple.JSONObject;" %>
+<%@ page import="org.json.simple.JSONArray;"%>
+<%@ page import="org.json.simple.parser.JSONParser;"%>
+<%@ page import="org.json.simple.parser.ParseException;"%>
+<%@ page import="java.io.FileNotFoundException;"%>
+<%@ page import="java.io.IOException;"%>
 
 <!DOCTYPE html>
 <html>
@@ -48,6 +54,31 @@
         out.println("Sending POST to " + url);
         out.println(urlParameters);
         out.println("Response Code : " + responseCode);
+        
+        BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        String s = br.readLine();
+        out.println("Json = "+s);
+        JSONParser parser = new JSONParser();
+        try {
+            Object obj2 = parser.parse(s);
+            JSONObject jsonObject = (JSONObject) obj2;
+            String token = (String) jsonObject.get("token");
+            Cookie cookietoken = new Cookie("token",token);
+            cookietoken.setMaxAge(60*60*24);
+            out.println("token = " + token);
+            String date = (String) jsonObject.get("expirytime");
+            Cookie cookietime = new Cookie("expirytime",date);
+            cookietime.setMaxAge(60*60*24);
+            response.addCookie(cookietoken);
+            response.addCookie(cookietime);
+            out.println("date = " + date);
+	} catch (FileNotFoundException e) {
+		e.printStackTrace();
+	} catch (IOException e) {
+		e.printStackTrace();
+	} catch (ParseException e) {
+		e.printStackTrace();
+	}
         
     } 
 %>
