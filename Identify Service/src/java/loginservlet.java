@@ -10,6 +10,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.security.SecureRandom;
+import java.math.BigInteger;
+import org.json.simple.JSONObject;
+//import java.util.Calendar;
 
 /**
  *
@@ -31,6 +35,8 @@ public class loginservlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
+            //test token
+            //out.println(buatToken());
         }
     }
 
@@ -64,12 +70,38 @@ public class loginservlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         
-        String email = request.getParameter("email");
-        String pass = request.getParameter("pass");
-        out.println(email);
-        out.println(pass);
+        String email = request.getParameter("username");
+        String pass = request.getParameter("password");
+        if(autentikasi(email,pass)){
+            JSONObject obj = new JSONObject();
+            //buat token secara random
+            String token = buatToken();
+            obj.put("token", token);
+            //obj.put("expiry time", );
+            obj.put("status", "ok");
+            out.print(obj);
+        }
+        //out.println(buatToken());
+       
+
     }
 
+    //akses database untuk mengecek (belum di implementasi)
+    public boolean autentikasi(String username, String password) {
+        if(username.equals("root") && password.equals("root")){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+    
+    //membuat token
+    public String buatToken(){
+        SecureRandom random = new SecureRandom();
+        return new BigInteger(130, random).toString(32);
+    }
+    
     /**
      * Returns a short description of the servlet.
      *
