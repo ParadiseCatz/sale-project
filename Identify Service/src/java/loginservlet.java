@@ -83,8 +83,8 @@ public class loginservlet extends HttpServlet {
             obj.put("token", token);
             Date expire = buatExpireTime();
             obj.put("expirytime", expire.toString());
-            //obj.put("status", "ok");
-            //out.print(obj);
+            obj.put("status", "ok");
+            out.print(obj);
             response.getWriter().write(obj.toString());
         }
         else{
@@ -104,7 +104,8 @@ public class loginservlet extends HttpServlet {
         }
         else{
             return false;
-        }*/
+        }
+        */
         return true;
     }
     
