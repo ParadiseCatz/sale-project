@@ -33,12 +33,15 @@ public class Market {
     public static Connection getConnection(){
         //membuka koneksi ke database marketplace
         Connection conn = null;
-        String URL="jdbc:mysql://localhost:3306/iton_marketplace";
+        String URL="jdbc:mysql://localhost:3306/iton_marketplace?zeroDateTimeBehavior=convertToNull";
         String USER="root";
         String PASS="";
         try {
+            Class.forName("com.mysql.jdbc.Driver");
             conn=DriverManager.getConnection(URL, USER, PASS);
         } catch (SQLException ex) {
+            Logger.getLogger(Market.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
             Logger.getLogger(Market.class.getName()).log(Level.SEVERE, null, ex);
         }
         
