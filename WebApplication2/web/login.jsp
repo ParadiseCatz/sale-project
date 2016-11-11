@@ -36,7 +36,7 @@
     String username = request.getParameter("username");
     String password = request.getParameter("password");
     if(username != null && password != null){
-        String url = "http://localhost:8081/Identity%20Service/loginservlet";
+        String url = "http://localhost:8081/Identity_Service/loginservlet";
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
         //add reuqest header
