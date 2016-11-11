@@ -4,7 +4,6 @@
     Author     : ASUS
 --%>
 
-<%@page import="market.Produk"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -24,20 +23,11 @@
 	// TODO process result here
 	java.util.List<market.Produk> result = port.listCatalog(userID);
 	out.println("Result = "+result);
-        Produk a=result.get(0);
-        out.println(a.getId());
-        out.println(a.getIdPenjual());
-        out.println(a.getUsername());
-        out.println(a.getNamaBarang());
-        out.println(a.getWaktuDitambahkan());
-        out.println(a.getNamaFoto());
-        out.println(a.getJumlahBeli());
     } catch (Exception ex) {
 	// TODO handle custom exceptions here
     }
     %>
     <%-- end web service invocation --%><hr/>
-
 
     </body>
 </html>
