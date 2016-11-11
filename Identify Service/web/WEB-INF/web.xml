@@ -17,6 +17,14 @@
         <servlet-name>Auth</servlet-name>
         <url-pattern>/Auth</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>UserInfo</servlet-name>
+        <servlet-class>app.UserInfo</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>UserInfo</servlet-name>
+        <url-pattern>/UserInfo</url-pattern>
+    </servlet-mapping>
     <session-config>
         <session-timeout>
             30

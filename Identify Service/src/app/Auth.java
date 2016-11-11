@@ -55,7 +55,17 @@ public class Auth extends HttpServlet {
             ++jumlah;
             id = rs.getInt("id");
         }
-        return jumlah == 1 ? id : null;
+        if (jumlah == 1) {
+            Timestamp expiry = buatExpireTime();
+            PreparedStatement pstmt = AppDatabase.getConnection().
+                    prepareStatement("UPDATE `session` SET expiry=? WHERE token=?");
+            pstmt.setTimestamp(1, expiry);
+            pstmt.setString(2, token);
+            pstmt.executeUpdate();
+            return id;
+        } else {
+            return null;
+        }
     }
 
     public static String addSession(Integer id) throws SQLException {
@@ -130,6 +140,7 @@ public class Auth extends HttpServlet {
             if (id != null) {
                 JSONObject obj = new JSONObject();
                 obj.put("user_id", id);
+                obj.put("session_age", AppConfig.get("expired_time"));
                 obj.put("status", "ok");
                 response.getWriter().write(obj.toString());
             } else {
