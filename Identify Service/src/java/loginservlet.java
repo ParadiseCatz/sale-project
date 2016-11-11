@@ -14,7 +14,6 @@ import java.security.SecureRandom;
 import java.math.BigInteger;
 import java.util.Date;
 import org.json.simple.JSONObject;
-import java.util.*;
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -44,6 +43,11 @@ public class loginservlet extends HttpServlet {
             out.println(buatToken());
             Date expire = buatExpireTime();
             out.println(expire.toString());
+            String sql2;
+            String username = "root";
+            String password = "root";
+            sql2 = "SELECT id FROM `login` WHERE (username = \"" +username+ "\" " + "OR email= \"" + username + "\") " + "AND password = \"" +password +"\";" ;
+            out.println(sql2);
         }
     }
 
@@ -87,7 +91,6 @@ public class loginservlet extends HttpServlet {
                 Date expire = buatExpireTime();
                 obj.put("expirytime", expire.toString());
                 obj.put("status", "ok");
-                out.print(obj);
                 response.getWriter().write(obj.toString());
             }
             else{
@@ -104,14 +107,29 @@ public class loginservlet extends HttpServlet {
         // Execute SQL query
          Statement stmt = conn.createStatement();
          String sql;
-         sql = "SELECT id, first, last, age FROM Employees";
+         sql = "SELECT id FROM `login` WHERE (username = \"" +username+ "\" " + "OR email = \"" + username + "\") " + "AND password = \"" +password +"\";" ;
          ResultSet rs = stmt.executeQuery(sql);
-        
-        return true;
+         int jumlah = 0 ;
+         // Extract data from result set
+         while(rs.next()){
+             ++jumlah;
+         }
+         rs.close();
+         stmt.close();
+         conn.close();
+         if(jumlah == 1){
+             return true;
+         }
+         else{
+             return false;
+         }
+        //return (username.equals("root")) || (password.equals("root"));
     }
+    
     
     Connection conn=getConnection();
     
+
     public static Connection getConnection(){
         Connection conn = null;
         try {

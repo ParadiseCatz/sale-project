@@ -1,35 +1,29 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
-<%@ page import="java.io.BufferedReader" %>
-<%@ page import="java.io.DataOutputStream" %>
-<%@ page import="java.io.InputStreamReader" %>
+<%@ page import="org.json.simple.JSONObject" %>
+<%@ page import="org.json.simple.parser.JSONParser" %>
+<%@ page import="org.json.simple.parser.ParseException" %>
+<%@ page import="java.io.*" %>
 <%@ page import="java.net.HttpURLConnection" %>
 <%@ page import="java.net.URL" %>
-<%@ page import="javax.net.ssl.HttpsURLConnection" %>
-<%@ page import="org.json.simple.JSONObject;" %>
-<%@ page import="org.json.simple.JSONArray;"%>
-<%@ page import="org.json.simple.parser.JSONParser;"%>
-<%@ page import="org.json.simple.parser.ParseException;"%>
-<%@ page import="java.io.FileNotFoundException;"%>
-<%@ page import="java.io.IOException;"%>
 
 <!DOCTYPE html>
 <html>
 <head>
-<title>Login</title>
-<link rel="stylesheet" type="text/css" href="style.css">
+    <title>Login</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
 
 <h1 id="title"><span id="Sale">Sale</span><span id="Project">Project</span></h1>
 <h2 class="pagetitle">Please login</h2>
 <hr>
-<form class="form" action="login.jsp" method = "POST">
-<label for="username">Email or Username</label>
-<input type="text" name="username" id="username"><br>
-<label for="password">Password</label>
-<input type="password" name="password" id="password"><br>
-<div id="tombol"><input type="submit" class="button" value="Login"></div>
+<form class="form" action="login.jsp" method="POST">
+    <label for="username">Email or Username</label>
+    <input type="text" name="username" id="username"><br>
+    <label for="password">Password</label>
+    <input type="password" name="password" id="password"><br>
+    <div id="tombol"><input type="submit" class="button" value="Login"></div>
 </form>
 
 <%
@@ -85,8 +79,10 @@
         }
         else{
             String site = new String("http://localhost:8080/Web_Application/login.jsp");
-            response.setStatus(response.SC_MOVED_TEMPORARILY);
-            response.setHeader("Location", site);
+            int responseCode2 = con.getResponseCode();
+            out.println("Response Code : " + responseCode2);
+            //response.setStatus(response.SC_MOVED_TEMPORARILY);
+            //response.setHeader("Location", site);
         }
     } 
 %>
