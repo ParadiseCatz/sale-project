@@ -6,19 +6,15 @@
 package Market;
 
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.jws.WebService;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebResult;
+import javax.jws.WebService;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 
 /**
  *
@@ -33,12 +29,9 @@ public class Market {
     public static Connection getConnection(){
         //membuka koneksi ke database marketplace
         Connection conn = null;
-        String URL="jdbc:mysql://localhost:3306/iton_marketplace?zeroDateTimeBehavior=convertToNull";
-        String USER="root";
-        String PASS="";
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            conn=DriverManager.getConnection(URL, USER, PASS);
+            conn=DriverManager.getConnection(AppConfig.get("db_url"), AppConfig.get("db_user"), AppConfig.get("db_password"));
         } catch (SQLException ex) {
             Logger.getLogger(Market.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException ex) {
