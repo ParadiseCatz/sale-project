@@ -16,6 +16,8 @@ import java.util.Date;
 import org.json.simple.JSONObject;
 import java.util.*;
 import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 //import java.util.Calendar;
 
 /**
@@ -76,37 +78,59 @@ public class loginservlet extends HttpServlet {
         PrintWriter out = response.getWriter();        
         String email = request.getParameter("username");
         String pass = request.getParameter("password");
-        if(autentikasi(email,pass)){
-            JSONObject obj = new JSONObject();
-            //buat token secara random
-            String token = buatToken();
-            obj.put("token", token);
-            Date expire = buatExpireTime();
-            obj.put("expirytime", expire.toString());
-            obj.put("status", "ok");
-            out.print(obj);
-            response.getWriter().write(obj.toString());
+        try {
+            if(autentikasi(email,pass)){
+                JSONObject obj = new JSONObject();
+                //buat token secara random
+                String token = buatToken();
+                obj.put("token", token);
+                Date expire = buatExpireTime();
+                obj.put("expirytime", expire.toString());
+                obj.put("status", "ok");
+                out.print(obj);
+                response.getWriter().write(obj.toString());
+            }
+            else{
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Wrong Email or Password !");
+            }
+            //out.println(buatToken());
+        } catch (SQLException ex) {
+            Logger.getLogger(loginservlet.class.getName()).log(Level.SEVERE, null, ex);
         }
-        else{
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Wrong Email or Password !");
-        }
-        //out.println(buatToken());
     }
 
     //akses database untuk mengecek (belum di implementasi)
-    public boolean autentikasi(String username, String password) {
+    public boolean autentikasi(String username, String password) throws SQLException {
+        // Execute SQL query
+         Statement stmt = conn.createStatement();
+         String sql;
+         sql = "SELECT id, first, last, age FROM Employees";
+         ResultSet rs = stmt.executeQuery(sql);
         
-        
-        
-        /*
-        if(username.equals("root") && password.equals("root")){
-            return true;
-        }
-        else{
-            return false;
-        }
-        */
         return true;
+    }
+    
+    Connection conn=getConnection();
+    
+    public static Connection getConnection(){
+        Connection conn = null;
+        try {
+            //membuka koneksi ke database marketplace
+            
+            String URL="jdbc:mysql://localhost:3306/iton_account?zeroDateTimeBehavior=convertToNull";
+            String USER="root";
+            String PASS="";
+            Class.forName("com.mysql.jdbc.Driver");
+            conn=DriverManager.getConnection(URL, USER, PASS);
+            
+            
+            return conn;
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(loginservlet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(loginservlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return conn;
     }
     
     //membuat expire time dari sekarang 
