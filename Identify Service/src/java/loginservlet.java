@@ -84,7 +84,6 @@ public class loginservlet extends HttpServlet {
             Date expire = buatExpireTime();
             obj.put("expirytime", expire.toString());
             obj.put("status", "ok");
-            out.print(obj);
             response.getWriter().write(obj.toString());
         }
         else{
@@ -95,18 +94,12 @@ public class loginservlet extends HttpServlet {
 
     //akses database untuk mengecek (belum di implementasi)
     public boolean autentikasi(String username, String password) {
-        
-        
-        
-        /*
         if(username.equals("root") && password.equals("root")){
             return true;
         }
         else{
             return false;
         }
-        */
-        return true;
     }
     
     //membuat expire time dari sekarang 
