@@ -48,6 +48,22 @@ public class loginservlet extends HttpServlet {
             String password = "root";
             sql2 = "SELECT id FROM `login` WHERE (username = \"" +username+ "\" " + "OR email= \"" + username + "\") " + "AND password = \"" +password +"\";" ;
             out.println(sql2);
+            Statement stmt;
+            try {
+                stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(sql2);
+                int jumlah = 0 ;
+                // Extract data from result set
+                while(rs.next()){
+                    ++jumlah;
+                }
+                out.println(jumlah);
+            } catch (SQLException ex) {
+                Logger.getLogger(loginservlet.class.getName()).log(Level.SEVERE, null, ex);
+                ex.printStackTrace();
+            }
+            
+            
         }
     }
 
@@ -114,9 +130,6 @@ public class loginservlet extends HttpServlet {
          while(rs.next()){
              ++jumlah;
          }
-         rs.close();
-         stmt.close();
-         conn.close();
          if(jumlah == 1){
              return true;
          }

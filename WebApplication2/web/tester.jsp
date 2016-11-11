@@ -14,15 +14,17 @@
     </head>
     <body>
         <h1>Hello World!</h1>
-            <%-- start web service invocation --%><hr/>
+    <%-- start web service invocation --%><hr/>
     <%
     try {
 	market.Market_Service service = new market.Market_Service();
 	market.Market port = service.getMarketPort();
 	 // TODO initialize WS operation arguments here
 	int userID = 0;
+	java.lang.String searchType = "";
+	java.lang.String searchKey = "";
 	// TODO process result here
-	java.util.List<market.Produk> result = port.listCatalog(userID);
+	java.util.List<market.Produk> result = port.listCatalog(userID, searchType, searchKey);
 	out.println("Result = "+result);
         Produk a=result.get(0);
         out.println(a.getId());
