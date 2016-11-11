@@ -6,6 +6,8 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@include file="verifytoken.jsp" %>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -16,35 +18,38 @@
             obj.height = obj.contentDocument.documentElement.scrollHeight + 'px';
             obj.width = obj.contentWindow.document.body.scrollWidth + 'px';
             var navpages = {
-                "catalog": "catalog.php",
-                "yourproducts": "yourproduct.php",
-                "addproduct": "addproduct.php",
-                "sales": "sales.php",
-                "purchases": "purchases.php"
+                "catalog": "catalog.jsp",
+                "yourproducts": "yourproduct.jsp",
+                "addproduct": "addproduct.jsp",
+                "sales": "sales.jsp",
+                "purchases": "purchases.jsp"
             }
             for (var x in navpages) {
                 var button = document.getElementById(x);
                 button.classList.remove("active");
                 var href = obj.contentWindow.location.href;
                 var src = href.substr(href.lastIndexOf('/') + 1);
-                if (src == navpages[x].concat("?userid=<?php echo $_GET["userid"]; ?>")) {
+                if (src == "login.jsp") {
+                    location.reload();
+                }
+                if (src == navpages[x]) {
                     button.className += "active";
                 }
             }
         }
         window.onload = function() {
             var navpages = {
-                "catalog": "catalog.php",
-                "yourproducts": "yourproduct.php",
-                "addproduct": "addproduct.php",
-                "sales": "sales.php",
-                "purchases": "purchases.php"
+                "catalog": "catalog.jsp",
+                "yourproducts": "yourproduct.jsp",
+                "addproduct": "addproduct.jsp",
+                "sales": "sales.jsp",
+                "purchases": "purchases.jsp"
             }
             for (var key in navpages) {
                 var createClickHandler =
                         function(key) {
                             return function() {
-                                document.getElementById("frame").src = navpages[key].concat("?userid=<?php echo $_GET["userid"]; ?>");
+                                document.getElementById("frame").src = navpages[key];
                                 resizeIframe(document.getElementById("frame"));
                             };
                         };
@@ -76,7 +81,6 @@
         <td id="purchases">Purchases</td>
     </tr>
 </table>
-
-
+<iframe id="frame" src="catalog.jsp" onload="resizeIframe(this)" frameborder=0 scrolling="no"></iframe>
 </body>
 </html>

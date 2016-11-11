@@ -1,11 +1,12 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
+<%@ page import="app.AppConfig" %>
 <%@ page import="org.json.simple.JSONObject" %>
 <%@ page import="org.json.simple.parser.JSONParser" %>
-<%@ page import="org.json.simple.parser.ParseException" %>
-<%@ page import="java.io.*" %>
-<%@ page import="java.net.HttpURLConnection" %>
-<%@ page import="java.net.URL" %>
+<%@ page import="java.io.BufferedReader" %>
+<%@ page import="java.io.DataOutputStream" %>
+<%@ page import="java.io.InputStreamReader" %>
+<%@ page import="java.net.HttpURLConnection" %><%@ page import="java.net.URL"%>
 
 <!DOCTYPE html>
 <html>
@@ -30,7 +31,7 @@
     String username = request.getParameter("username");
     String password = request.getParameter("password");
     if(username != null && password != null){
-        String url = "http://localhost:8081/Identity_Service/loginservlet";
+        String url = AppConfig.get("identity_service_url") + "/Login";
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
         //add reuqest header
@@ -57,19 +58,12 @@
                 JSONObject jsonObject = (JSONObject) obj2;
                 String token = (String) jsonObject.get("token");
                 Cookie cookietoken = new Cookie("token",token);
-                cookietoken.setMaxAge(60*60*24);
                 out.println("token = " + token);
-                String date = (String) jsonObject.get("expirytime");
-                Cookie cookietime = new Cookie("expirytime",date);
-                cookietime.setMaxAge(60*60*24);
+                Integer session_age = Integer.valueOf((String)jsonObject.get("session_age"));
+                cookietoken.setMaxAge(session_age / 1000);
                 response.addCookie(cookietoken);
-                response.addCookie(cookietime);
-                out.println("date = " + date);
-            } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-            } catch (IOException e) {
-                    e.printStackTrace();
-            } catch (ParseException e) {
+                out.println("date = " + session_age);
+            } catch (Exception e) {
                     e.printStackTrace();
             }
             //pindah page ke dashboard
@@ -77,8 +71,7 @@
             response.setStatus(response.SC_MOVED_TEMPORARILY);
             response.setHeader("Location", site);*/
         }
-        else{
-            String site = new String("http://localhost:8080/Web_Application/login.jsp");
+        else {
             int responseCode2 = con.getResponseCode();
             out.println("Response Code : " + responseCode2);
             //response.setStatus(response.SC_MOVED_TEMPORARILY);
