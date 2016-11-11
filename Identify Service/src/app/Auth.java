@@ -42,12 +42,11 @@ public class Auth extends HttpServlet {
 
     public static Integer authenticate(String token) throws SQLException {
         // Execute SQL query
-        Statement stmt = AppDatabase.getConnection().createStatement();
-        String sql;
-        sql = "SELECT id " +
+        PreparedStatement pstmt = AppDatabase.getConnection().prepareStatement("SELECT id " +
                 "FROM `session` " +
-                "WHERE token = \"" + token + "\" AND expiry > " + new Timestamp(System.currentTimeMillis()) + ";";
-        ResultSet rs = stmt.executeQuery(sql);
+                "WHERE token = ? AND expiry > NOW()");
+        pstmt.setString(1, token);
+        ResultSet rs = pstmt.executeQuery();
         int jumlah = 0;
         // Extract data from result set
         Integer id = null;
@@ -57,11 +56,11 @@ public class Auth extends HttpServlet {
         }
         if (jumlah == 1) {
             Timestamp expiry = buatExpireTime();
-            PreparedStatement pstmt = AppDatabase.getConnection().
-                    prepareStatement("UPDATE `session` SET expiry=? WHERE token=?");
-            pstmt.setTimestamp(1, expiry);
-            pstmt.setString(2, token);
-            pstmt.executeUpdate();
+            PreparedStatement pstmt2 = AppDatabase.getConnection().
+                    prepareStatement("UPDATE `session` SET expiry = ? WHERE token = ?");
+            pstmt2.setTimestamp(1, expiry);
+            pstmt2.setString(2, token);
+            pstmt2.executeUpdate();
             return id;
         } else {
             return null;

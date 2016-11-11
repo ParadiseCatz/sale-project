@@ -62,15 +62,9 @@
 <body>
 
 <h1 id="title"><span id="Sale">Sale</span><span id="Project">Project</span></h1>
-<div id="account">Hi, <span id="username"><?php
-	include("config.php");
-	$username_query = "SELECT username FROM login WHERE id = " . $_GET["userid"] . ";";
-	$username_query_result = mysqli_query($db,$username_query);
-	$fetch = mysqli_fetch_array($username_query_result,MYSQLI_ASSOC);
-	$username = $fetch["username"];
-	echo $username;
-	echo "!";
-?></span><br><span id="logout"><a href="login.php" class="logout" >logout</a></span></div>
+<div id="account">Hi, <span id="username"><%
+    if (getCookie(request, "full_name") != null) out.print(getCookie(request, "full_name").getValue());
+    else out.print("NULL");%></span><br><span id="logout"><a href="login.php" class="logout" >logout</a></span></div>
 
 <table class="navbar">
     <tr>

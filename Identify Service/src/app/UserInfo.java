@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -59,13 +58,14 @@ public class UserInfo extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("application/json;charset=UTF-8");
-        PrintWriter out = response.getWriter();
         String token = request.getParameter("token");
+        if (token == null) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Bad Request!");
+            return;
+        }
         try {
-            Integer id = null;
-            if (token != null) {
-                id = Auth.authenticate(token);
-            } else {
+            Integer id = Auth.authenticate(token);
+            if (id == null) {
                 String userId = request.getParameter("user_id");
                 if (userId != null) {
                     id = Integer.valueOf(userId);
@@ -78,15 +78,19 @@ public class UserInfo extends HttpServlet {
                 PreparedStatement pstmt = AppDatabase.getConnection().
                         prepareStatement("SELECT username, full_name " +
                                 "FROM `data_pelanggan` " +
-                                "WHERE id=?;");
+                                "WHERE id = ?");
                 pstmt.setInt(1, id);
                 ResultSet resultSet = pstmt.executeQuery();
-                obj.put("user_id", id);
-                obj.put("username", resultSet.getString("username"));
-                obj.put("full_name", resultSet.getString("full_name"));
-                obj.put("session_age", AppConfig.get("expired_time"));
-                obj.put("status", "ok");
-                response.getWriter().write(obj.toString());
+                if (resultSet.next()) {
+                    obj.put("user_id", id);
+                    obj.put("username", resultSet.getString("username"));
+                    obj.put("full_name", resultSet.getString("full_name"));
+                    obj.put("session_age", AppConfig.get("expired_time"));
+                    obj.put("status", "ok");
+                    response.getWriter().write(obj.toString());
+                } else {
+                    response.sendError(HttpServletResponse.SC_NOT_FOUND, "User Info not found!");
+                }
             } else {
                 response.sendError(HttpServletResponse.SC_NOT_FOUND, "User Info not found!");
             }

@@ -57,10 +57,10 @@
             try {
                 Object obj2 = parser.parse(s);
                 JSONObject jsonObject = (JSONObject) obj2;
-                String token = (String) jsonObject.get("token");
+                String token = jsonObject.get("token").toString();
                 Cookie cookietoken = new Cookie("token",token);
 //                out.println("token = " + token);
-                Integer session_age = Integer.valueOf((String)jsonObject.get("session_age"));
+                Integer session_age = Integer.valueOf(jsonObject.get("session_age").toString());
                 cookietoken.setMaxAge(session_age / 1000);
                 response.addCookie(cookietoken);
 //                out.println("date = " + session_age);

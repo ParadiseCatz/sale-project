@@ -17,7 +17,7 @@
 <h2 class="pagetitle">Please add your product here</h2>
 <hr>
 <form id="AddProductForm" onsubmit="return validateAddProduct(this)" method="post" action="addproductaction.php" enctype="multipart/form-data">
-    <input type="hidden" name="userid" value="<?php echo $_GET["userid"]; ?>">
+    <input type="hidden" name="userid" value="">
     <label for="Name">Name</label>
     <input type="text" id="Name" name="name"><br>
     <label for="Description">Description(max 200 chars)</label>

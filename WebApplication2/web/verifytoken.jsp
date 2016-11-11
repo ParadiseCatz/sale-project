@@ -26,6 +26,22 @@
 %>
 
 <%!
+    public Cookie getCookie(HttpServletRequest request, String key){
+        Cookie[] cookies;
+        cookies = request.getCookies();
+        if( cookies != null ) {
+            for (Cookie cookie : cookies) {
+                if (Objects.equals(cookie.getName(), key)) {
+                    return cookie;
+                }
+            }
+        }
+        return null;
+    }
+
+%>
+
+<%!
     public void setUserInfo(HttpServletResponse response, String token) throws IOException {
         String url = AppConfig.get("identity_service_url") + "/UserInfo";
         URL obj = new URL(url);
@@ -43,23 +59,22 @@
             String s = br.readLine();
             JSONParser parser = new JSONParser();
             try {
+
                 Object obj2 = parser.parse(s);
                 JSONObject jsonObject = (JSONObject) obj2;
 
-                String user_id = (String) jsonObject.get("user_id");
+                String user_id = jsonObject.get("user_id").toString();
                 Cookie user_id_cookie = new Cookie("user_id",user_id);
 
 
-                String username = (String) jsonObject.get("username");
+                String username = jsonObject.get("username").toString();
                 Cookie username_cookie = new Cookie("username",username);
 
-                String full_name = (String) jsonObject.get("full_name");
-                Cookie full_name_cookie = new Cookie("full_name",user_id);
+                String full_name = jsonObject.get("full_name").toString();
+                Cookie full_name_cookie = new Cookie("full_name",full_name);
 
-                Integer session_age = Integer.valueOf((String)jsonObject.get("session_age"));
-                user_id_cookie.setMaxAge(session_age / 1000);
-                username_cookie.setMaxAge(session_age / 1000);
-                full_name_cookie.setMaxAge(session_age / 1000);
+                Integer session_age = Integer.valueOf(jsonObject.get("session_age").toString());
+
                 response.addCookie(user_id_cookie);
                 response.addCookie(username_cookie);
                 response.addCookie(full_name_cookie);
@@ -71,52 +86,40 @@
 
 %>
 <%
-    Cookie[] cookies;
-    // Get an array of Cookies associated with this domain
-    cookies = request.getCookies();
-    if( cookies != null ){
-        boolean tokenExist = false;
-        for (Cookie cookie : cookies) {
-            if (Objects.equals(cookie.getName(), "token")) {
-                tokenExist = true;
-                String token = cookie.getValue();
-
-                String url = AppConfig.get("identity_service_url") + "/Auth";
-                URL obj = new URL(url);
-                HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-                //add request header
-                con.setRequestMethod("POST");
-                con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
-                String urlParameters = "token=" + token;
-                con.setDoOutput(true);
-                DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-                wr.writeBytes(urlParameters);
-                wr.flush();
-                wr.close();
-                int responseCode = con.getResponseCode();
-                if (responseCode == 200) {
-                    BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
-                    String s = br.readLine();
-                    JSONParser parser = new JSONParser();
-                    try {
-                        Object obj2 = parser.parse(s);
-                        JSONObject jsonObject = (JSONObject) obj2;
-                        Integer session_age = Integer.valueOf((String)jsonObject.get("session_age"));
-                        cookie.setMaxAge(session_age);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    tokenExist = true;
-                    setUserInfo(response, token);
-                }
-                break;
+    Cookie tokenCookie = getCookie(request, "token");
+    if (tokenCookie != null){
+        String token = tokenCookie.getValue();
+        String url = AppConfig.get("identity_service_url") + "/Auth";
+        URL obj = new URL(url);
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        //add request header
+        con.setRequestMethod("POST");
+        con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+        String urlParameters = "token=" + token;
+        con.setDoOutput(true);
+        DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+        wr.writeBytes(urlParameters);
+        wr.flush();
+        wr.close();
+        int responseCode = con.getResponseCode();
+        if (responseCode == 200) {
+            BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            String s = br.readLine();
+            JSONParser parser = new JSONParser();
+            try {
+                Object obj2 = parser.parse(s);
+                JSONObject jsonObject = (JSONObject) obj2;
+                Integer session_age = Integer.valueOf(jsonObject.get("session_age").toString());
+                tokenCookie.setMaxAge(session_age);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        }
-        if (!tokenExist) {
+            setUserInfo(response, token);
+            setUserInfo(response, token);
+        } else {
             redirectToLogin(request, response);
         }
-    }else{
+    } else {
         redirectToLogin(request, response);
     }
-
 %>
