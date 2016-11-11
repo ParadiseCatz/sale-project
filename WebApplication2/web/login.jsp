@@ -6,7 +6,8 @@
 <%@ page import="java.io.BufferedReader" %>
 <%@ page import="java.io.DataOutputStream" %>
 <%@ page import="java.io.InputStreamReader" %>
-<%@ page import="java.net.HttpURLConnection" %><%@ page import="java.net.URL"%>
+<%@ page import="java.net.HttpURLConnection" %>
+<%@ page import="java.net.URL" %>
 
 <!DOCTYPE html>
 <html>
@@ -45,31 +46,33 @@
         wr.flush();
         wr.close();
         int responseCode = con.getResponseCode();
-        out.println("Sending POST to " + url);
-        out.println(urlParameters);
-        out.println("Response Code : " + responseCode);
+//        out.println("Sending POST to " + url);
+//        out.println(urlParameters);
+//        out.println("Response Code : " + responseCode);
         if(responseCode == 200){
             BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
             String s = br.readLine();
-            out.println("Json = "+s);
+//            out.println("Json = "+s);
             JSONParser parser = new JSONParser();
             try {
                 Object obj2 = parser.parse(s);
                 JSONObject jsonObject = (JSONObject) obj2;
                 String token = (String) jsonObject.get("token");
                 Cookie cookietoken = new Cookie("token",token);
-                out.println("token = " + token);
+//                out.println("token = " + token);
                 Integer session_age = Integer.valueOf((String)jsonObject.get("session_age"));
                 cookietoken.setMaxAge(session_age / 1000);
                 response.addCookie(cookietoken);
-                out.println("date = " + session_age);
+//                out.println("date = " + session_age);
+                //Redirect to Dashboard
+                String reqURL = String.valueOf(request.getRequestURL());
+                String redirectURL = reqURL.replaceFirst(request.getServletPath(), "/dashboard.jsp");
+                response.setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY);
+                response.setHeader("Location", redirectURL);
             } catch (Exception e) {
                     e.printStackTrace();
             }
-            //pindah page ke dashboard
-            /*String site = new String("http://localhost:8080/Web_Application/login.jsp");
-            response.setStatus(response.SC_MOVED_TEMPORARILY);
-            response.setHeader("Location", site);*/
+
         }
         else {
             int responseCode2 = con.getResponseCode();
