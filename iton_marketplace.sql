@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 07, 2016 at 04:04 PM
+-- Generation Time: Nov 11, 2016 at 05:17 PM
 -- Server version: 10.1.16-MariaDB
 -- PHP Version: 7.0.9
 
@@ -33,19 +33,20 @@ CREATE TABLE `barang` (
   `nama_barang` varchar(50) NOT NULL,
   `harga` bigint(64) NOT NULL,
   `deskripsi` varchar(1000) NOT NULL,
-  `nama_foto` varchar(100) NOT NULL,
   `waktu_ditambahkan` datetime NOT NULL,
   `jumlah_like` int(32) NOT NULL,
-  `jumlah_dibeli` int(32) NOT NULL
+  `jumlah_dibeli` int(32) NOT NULL,
+  `foto` mediumtext NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `barang`
 --
 
-INSERT INTO `barang` (`id`, `id_penjual`, `username`, `nama_barang`, `harga`, `deskripsi`, `nama_foto`, `waktu_ditambahkan`, `jumlah_like`, `jumlah_dibeli`) VALUES
-(40, 1, 'root', 'PS4', 4500000, 'PS4 Console master race', 'image\\57f79dc3b3457.jpg', '2016-10-07 20:06:11', 1, 0),
-(48, 1, 'root', 'ps5', 12350000, 'asdlasjdaskl', 'image\\58073ddb9077a.png', '2016-10-19 16:33:15', 0, 1);
+INSERT INTO `barang` (`id`, `id_penjual`, `username`, `nama_barang`, `harga`, `deskripsi`, `waktu_ditambahkan`, `jumlah_like`, `jumlah_dibeli`, `foto`) VALUES
+(3, 2, 'rome', 'Talia', 32131, 'fweagbvawbaewbwa', '2016-11-23 00:00:00', 3, 1, ''),
+(40, 1, 'root', 'PS4', 4500000, 'PS4 Console master race', '2016-10-07 20:06:11', 1, 0, ''),
+(48, 1, 'root', 'ps5', 12350000, 'asdlasjdaskl', '2016-10-19 16:33:15', 0, 1, '');
 
 -- --------------------------------------------------------
 
