@@ -57,10 +57,15 @@ public class Market {
 
     /**
      * Web service operation
+     * @param userID
+     * @param searchType
+     * @param searchKey
      */
     @WebMethod(operationName = "listCatalog")
     @WebResult(name="Produk")
-    public ArrayList<Produk> listCatalog(@WebParam(name = "userID") int userID){
+    public ArrayList<Produk> listCatalog(@WebParam(name = "userID") int userID,
+            @WebParam(name = "searchType") String searchType,
+            @WebParam(name = "searchKey") String searchKey){
         //TODO write your implementation code here:
         //TODO write your implementation code here:
         //TODO write your implementation code here:
@@ -70,7 +75,22 @@ public class Market {
         } catch (SQLException ex) {
             Logger.getLogger(Market.class.getName()).log(Level.SEVERE, null, ex);
         }
-        String query="SELECT * FROM barang where id_penjual<>? ORDER BY waktu_ditambahkan DESC";
+        String query = null;
+        if (searchKey==null){
+            query="SELECT * FROM barang where id_penjual<>? ORDER BY waktu_ditambahkan DESC";
+        }
+        else
+        {
+            if ("product".equals(searchType)){
+                query="SELECT * FROM barang where id_penjual<>? AND nama_barang LIKE '%"+searchKey+
+                        "%' ORDER BY waktu_ditambahkan DESC";	
+            }
+            else
+            {
+                query="SELECT * FROM barang where id_penjual<>? AND username LIKE '%"+searchKey+"%' "
+                        + "ORDER BY waktu_ditambahkan DESC";	
+            }
+        }
         PreparedStatement dbStatement = null;
         try {
             dbStatement = conn.prepareStatement(query);
