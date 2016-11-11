@@ -109,7 +109,7 @@ public class Market {
             while (result.next()){
                 daftarCatalog.add(new Produk(result.getInt("id"),result.getInt("id_penjual"),
                         result.getString("username"), result.getString("nama_barang"),result.getLong("harga"),
-                        result.getString("deskripsi"),result.getString("nama_foto"),result.getString("waktu_ditambahkan"),
+                        result.getString("deskripsi"),result.getString("foto"),result.getString("waktu_ditambahkan"),
                         result.getInt("jumlah_like"),result.getInt("jumlah_dibeli")));
                 ++i;
             }
@@ -118,5 +118,56 @@ public class Market {
         }
         return daftarCatalog;
         
+    }
+
+    /**
+     * Web service operation
+     * @param userid
+     * @param username
+     * @param nama
+     * @param description
+     * @param price
+     * @param foto
+     */
+    @WebMethod(operationName = "addProduct")
+    public Boolean addProduct(@WebParam(name = "userid") int userid, @WebParam(name = "username") 
+            String username, @WebParam(name = "nama") String nama, @WebParam(name = "description")
+                    String description, @WebParam(name = "price") String price, @WebParam(name = "foto") String foto) {
+        //TODO write your implementation code here:
+        if ((nama.isEmpty()) || (description.isEmpty()) || (price.isEmpty()) ||
+                (foto.isEmpty()) || (userid==0) || (username.isEmpty())){
+            return false;
+        }
+        else
+        {
+            try {
+                Statement sqlStatement=conn.createStatement();
+            } catch (SQLException ex) {
+                Logger.getLogger(Market.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            String query = null;
+            query="INSERT INTO barang VALUES (NULL,?,?,?,?,?,?,?,?,?)";
+            PreparedStatement dbStatement = null;
+            try {
+                dbStatement = conn.prepareStatement(query);
+                dbStatement.setInt(1, userid);
+                dbStatement.setString(2, username);
+                dbStatement.setString(3, nama);
+                long harga;
+                harga=Long.parseLong(price);
+                dbStatement.setLong(4, harga);
+                dbStatement.setString(5, description);
+                dbStatement.setTimestamp(6, new java.sql.Timestamp(new java.util.Date().getTime()));
+                dbStatement.setInt(7, 0);
+                dbStatement.setInt(8, 0);
+                dbStatement.setString(9, foto);
+                dbStatement.executeUpdate();
+                conn.commit();
+                
+            } catch (SQLException ex) {
+                Logger.getLogger(Market.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return true;
+        }
     }
 }
