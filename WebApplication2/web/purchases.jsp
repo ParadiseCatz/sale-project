@@ -70,11 +70,11 @@
                     out.println("</div>");
                     out.println("</div>");
                     out.println("<br><hr>");
-                    out.println("<div>");
+                    out.println("<div>");                    
                 }
             }
             else{
-                out.println("<h2 class=\"pagetitle\">You have no product, please sell something first in add product !</h2>");
+                out.println("<h2 class=\"pagetitle\">You have no purchases, please buy something first !</h2>");
             }
 
         } catch (Exception ex) {

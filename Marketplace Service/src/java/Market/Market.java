@@ -349,4 +349,39 @@ public class Market {
         return daftarSales;
     }
     
+    @WebMethod(operationName = "sales")
+    public ArrayList<transaction> purchase(@WebParam(name = "idpembeli") int idpembeli)  {
+        //TODO write your implementation code here:
+        ArrayList<transaction> daftarPurchase=new ArrayList<>();     
+        Statement stmt = null;
+        try {
+            stmt = conn.createStatement();
+        } catch (SQLException ex) {
+            Logger.getLogger(Market.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        String query ;
+        query="SELECT * " +
+                "FROM `transaction` " +
+                "WHERE id_pembeli = " + idpembeli + ";";
+        ResultSet rs = null;
+        try {
+            rs = stmt.executeQuery(query);
+        } catch (SQLException ex) {
+            Logger.getLogger(Market.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            // Extract data from result set
+            while (rs.next()) {
+                daftarPurchase.add(new transaction(rs.getInt("id"),rs.getInt("id_pembeli"),
+                        rs.getInt("quantity"), rs.getString("cosignee"),rs.getString("full_address"),
+                        rs.getInt("postal_code"),rs.getLong("phone_number"),rs.getLong("creditcard_number"),
+                        rs.getInt("creditcard_verification"),rs.getString("nama_barang"),rs.getLong("harga_barang"),
+                        rs.getString("foto"),rs.getInt("id_penjual"),rs.getString("waktu_transaksi")));                                       
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Market.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return daftarPurchase;
+    }
+    
 }
