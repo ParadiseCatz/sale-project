@@ -163,4 +163,44 @@ public class Market {
             return true;
         }
     }
+
+    /**
+     * Web service operation
+     */
+    @WebMethod(operationName = "checkLike")
+    public Boolean checkLike(@WebParam(name = "id_user") int id_user, @WebParam(name = "id_barang") int id_barang) {
+        //TODO write your implementation code here:
+        Boolean isLiked = null;
+            try {
+                Statement sqlStatement=conn.createStatement();
+            } catch (SQLException ex) {
+                Logger.getLogger(Market.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        String query="SELECT * FROM user_liked WHERE id_user = '"+id_user+"' AND id_barang = '"+id_barang+"'";
+        PreparedStatement dbStatement = null;
+        try {
+            dbStatement = conn.prepareStatement(query);
+        } catch (SQLException ex) {
+            Logger.getLogger(Market.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        ResultSet result = null;
+        try {
+            result = dbStatement.executeQuery();
+        } catch (SQLException ex) {
+            Logger.getLogger(Market.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        try {
+            if (!result.isBeforeFirst()){
+                isLiked=false;
+            }
+            else
+            {
+                isLiked=true;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Market.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return isLiked;
+    }
 }

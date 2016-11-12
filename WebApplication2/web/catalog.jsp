@@ -116,16 +116,39 @@
             out.println(jumlah_beli +"  purchases<br><br>");
             
             //jax ws mengecek jumlah like
+            try {
+                 // TODO initialize WS operation arguments here
+                int idUser = userid;
+                int idBarang = temp.getId();
+                // TODO process result here
+                java.lang.Boolean resultLike = port.checkLike(idUser, idBarang);
+                if (resultLike=true){
+                    //kasus jika sudah like
+                    out.println("<span class=\"like\" data-product-id=\""+idBarang+"\">LIKE");
+                }
+                else
+                {
+                    //kasus jika belum like
+                    out.println("<span class=\"liked\" data-product-id=\""+idBarang+"\">LIKED");
+                }
+                out.println("</span>");
+                String urlPurchase;
+                urlPurchase="ConfirmationPurchase.php?userid_pembeli="+idUser
+                        +"&userid_penjual="+temp.getIdPenjual()+"&nama_barang="
+                        +temp.getNamaBarang()+"&path_foto="+temp.getNamaFoto()
+                        +"&harga_barang="+temp.getHarga()+"&id_barang="
+                        +temp.getId();
+                out.println("<a href=\""+urlPurchase+"\" class=\"buy\">BUY</a>");
+                out.println("</div>");
+                out.println("</div>");
+                out.println("<br><hr>");
+            } catch (Exception ex) {
+                // TODO handle custom exceptions here
+            }
             
-            out.println();
-            out.println();
-            out.println();
-            out.println();
-            out.println();
-            out.println();
-            out.println();
-            out.println();
-            out.println();
+            
+            
+           
             
         }
 	
@@ -137,7 +160,7 @@
     %>
     <%-- end web service invocation --%><hr/>
 
-
+   
 
 
 </body>
