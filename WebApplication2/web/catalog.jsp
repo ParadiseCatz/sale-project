@@ -62,11 +62,11 @@
 <body>
 <h2 class="pagetitle">What are you going to buy today?</h2>
 <hr>
-<form action="catalog.php" id="search" method="GET">
-    <?php
-				$userid = $_GET["userid"];
-				echo "<input type=\"hidden\" name=\"userid\" value=" .$userid,">";
-    ?>
+<form action="catalog.jsp" id="search" method="GET">
+    <%
+        int userid=Integer.parseInt(request.getParameter("userid"));
+	out.println("<input type=\"hidden\" name=\"userid\" value="+userid+">");
+    %>
     <input name="searchkey" type="text" placeholder="Search catalog ..." id="Search" autofocus="1">
     <input type="submit" value="GO" id="GO" class="button">
     <br>
@@ -75,93 +75,70 @@
     <input type="radio" name="filter" value="store">Store<br>
 </form>
 <br>
-<?php
-		$dosearch=FALSE;
-		if ((!empty($_GET["searchkey"])) && (!empty($_GET["filter"]))){
-			$searchkey=$_GET["searchkey"];
-			$filter=$_GET["filter"];
-			$dosearch=true;
-		}
+
+    <%-- start web service invocation --%><hr/>
+    <%
+    try {
+	market.Market_Service service = new market.Market_Service();
+	market.Market port = service.getMarketPort();
+	 // TODO initialize WS operation arguments here
+	int userID = userid;
+	java.lang.String searchType = request.getParameter("filter");
+	java.lang.String searchKey = request.getParameter("searchkey");
+	// TODO process result here
+	java.util.List<market.Produk> result = port.listCatalog(userID, searchType, searchKey);
+        
+        for (market.Produk temp:result){
+            //Looping melakukan print catalog
+            out.println("<div class=\"username\">" + temp.getUsername() + "</div>");
+            out.println("<div class=\"tanggal\"> added this on "+ temp.getWaktuDitambahkan() + "</div>");
+            out.println("<hr>");
+            out.println("<div class=\"container\">");
+            out.println("<div class=\"divGambar\">");
+            
+            //TODO BENERIN PRINT FOTO
+            out.println("<img src=\"" + temp.getNamaFoto() + "\" class=\"GambarKatalog\">");
+            //TODO
+            
+            out.println("</div>");
+            out.println("<div class=\"divDesc\">");
+            out.println("<span class=\"NamaBarang\">"+ temp.getNamaBarang()+"</span><br>");
+            DecimalFormat formatter=new DecimalFormat("###,###,###",DecimalFormatSymbols.getInstance(Locale.GERMANY));
+            
+            out.println("<span class=\"HargaBarang\"> IDR " + formatter.format(temp.getHarga()) + "</span><br>");
+            out.println("<span class=\"DeskripsiBarang\">"+ temp.getDeskripsi() +"</span><br>");
+            out.println("</div>");
+            out.println("<div class=\"divLike\">");
+            String id_barang=Integer.toString(temp.getId());
+            String jumlah_like=Integer.toString(temp.getJumlahLike());
+            out.println("<span id=\"productlikes#"+id_barang+"\">" +jumlah_like+"</span> likes<br>");
+            String jumlah_beli=Integer.toString(temp.getJumlahBeli());
+            out.println(jumlah_beli +"  purchases<br><br>");
+            
+            //jax ws mengecek jumlah like
+            
+            out.println();
+            out.println();
+            out.println();
+            out.println();
+            out.println();
+            out.println();
+            out.println();
+            out.println();
+            out.println();
+            
+        }
+	
+    } catch (Exception ex) {
+	// TODO handle custom exceptions here
+        
+        out.println("<h1>" + ex.toString()+"</h1>");
+    }
+    %>
+    <%-- end web service invocation --%><hr/>
 
 
-		include("config.php");
-		$userid = $_GET["userid"];
-		if ($dosearch===FALSE){
-			$query = "SELECT * FROM barang where id_penjual<>" . $userid . " ORDER BY waktu_ditambahkan DESC";
-}
-elseif ($dosearch===true) {
-if ($filter==="product"){
-$query = "SELECT * FROM barang where id_penjual<>" . $userid . " AND nama_barang LIKE '%".$searchkey."%' ORDER BY waktu_ditambahkan DESC";
-}
-elseif ($filter==="store") {
-$query = "SELECT * FROM barang,data_pelanggan where id_penjual<>" . $userid . " AND username LIKE '%".$searchkey."%' AND data_pelanggan.id=id_penjual ORDER BY waktu_ditambahkan DESC";
-}
-}
 
-$result = mysqli_query($db,$query);
-if ($result === FALSE){}
-else
-{
-while ($row = mysqli_fetch_row($result)) {
-$username_query = "SELECT username FROM login WHERE id = " . $row[1] . ";";
-$username_query_result = mysqli_query($db,$username_query);
-$fetch = mysqli_fetch_array($username_query_result,MYSQLI_ASSOC);
-$username = $fetch["username"];
-echo "<div class=\"username\">" . $username, "</div>" ;
-$time = strtotime($row[6]);
-echo "<div class=\"tanggal\">" ."added this on ". date('l',$time), ", " . date('d',$time), " " . date('F',$time)," " .date('Y',$time) . " at " . date('H',$time), "." . date('i',$time), "</div>" ;
-echo "<hr>";
-
-echo "<div class=\"container\">";
-    //echo gambar berdasarkan source
-    echo "<div class=\"divGambar\">";
-        echo "<img src=\"" . $row[5], "\" class=\"GambarKatalog\">";
-        echo "</div>";
-
-    //echo keterangan item
-    echo "<div class=\"divDesc\">";
-        echo "<span class=\"NamaBarang\">" . $row[2], "</span><br>";
-        echo "<span class=\"HargaBarang\"> IDR " . number_format($row[3], 0, ',', '.'), "</span><br>";
-        echo "<span class=\"DeskripsiBarang\">" . $row[4], "</span><br>";
-        echo "</div>";
-
-    //echo like purchase
-    echo "<div class=\"divLike\">";
-        echo "<span id=\"productlikes#".$row[0]."\">" . $row[7], "</span> likes<br>";
-        echo $row[8], "  purchases<br><br>";
-
-        $check_liked_query = "
-        SELECT *
-        FROM user_liked
-        WHERE
-        id_user = '".$_GET["userid"]."' AND
-        id_barang = '".$row[0]."'
-        ";
-        $check_liked_result = mysqli_query($db,$check_liked_query);
-        $fetch = mysqli_fetch_array($check_liked_result,MYSQLI_ASSOC);
-        if ($fetch == NULL) {
-        echo "<span class=\"like\" data-product-id=\"$row[0]\">LIKE";
-			} else {
-				echo "<span class=\"liked\" data-product-id=\"$row[0]\">LIKED";
-			}
-
-			echo "</span>";
-			$confirmation_purchase_url = "ConfirmationPurchase.php?";
-			$confirmation_purchase_url .= "userid_pembeli=" . $_GET["userid"] . "&";
-			$confirmation_purchase_url .= "userid_penjual=" . $row[1] . "&";
-			$confirmation_purchase_url .= "nama_barang=" . $row[2] . "&";
-			$confirmation_purchase_url .= "path_foto=" . $row[5] . "&";
-			$confirmation_purchase_url .= "harga_barang=" . $row[3] . "&";
-			$confirmation_purchase_url .= "id_barang=" . $row[0];
-
-			echo "<a href=\"".$confirmation_purchase_url."\" class=\"buy\">BUY</a>";
-			echo "</div>";
-    echo "</div>";
-
-echo "<br><hr>";
-}
-}
-?>
 
 </body>
 </html>
