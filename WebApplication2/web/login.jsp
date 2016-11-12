@@ -5,6 +5,7 @@
 <%@ page import="org.json.simple.parser.JSONParser" %>
 <%@ page import="java.io.BufferedReader" %>
 <%@ page import="java.io.DataOutputStream" %>
+<%@ page import="java.io.IOException" %>
 <%@ page import="java.io.InputStreamReader" %>
 <%@ page import="java.net.HttpURLConnection" %>
 <%@ page import="java.net.URL" %>
@@ -27,6 +28,54 @@
     <input type="password" name="password" id="password"><br>
     <div id="tombol"><input type="submit" class="button" value="Login"></div>
 </form>
+
+<%!
+    private void setUserInfo(HttpServletResponse response, String token) throws IOException {
+        String url = AppConfig.get("identity_service_url") + "/UserInfo";
+        URL obj = new URL(url);
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        //add request header
+        con.setRequestMethod("POST");
+        con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+        String urlParameters = "token=" + token;
+        con.setDoOutput(true);
+        DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+        wr.writeBytes(urlParameters); wr.flush(); wr.close();
+        int responseCode = con.getResponseCode();
+        if (responseCode == 200) {
+            BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            String s = br.readLine();
+            JSONParser parser = new JSONParser();
+            try {
+
+                Object obj2 = parser.parse(s);
+                JSONObject jsonObject = (JSONObject) obj2;
+
+                String user_id = jsonObject.get("user_id").toString();
+                Cookie user_id_cookie = new Cookie("user_id",user_id);
+
+
+                String username = jsonObject.get("username").toString();
+                Cookie username_cookie = new Cookie("username",username);
+
+                String full_name = jsonObject.get("full_name").toString();
+                Cookie full_name_cookie = new Cookie("full_name",full_name);
+
+                Integer session_age = Integer.valueOf(jsonObject.get("session_age").toString());
+                user_id_cookie.setMaxAge(session_age / 1000);
+                username_cookie.setMaxAge(session_age / 1000);
+                full_name_cookie.setMaxAge(session_age / 1000);
+
+                response.addCookie(user_id_cookie);
+                response.addCookie(username_cookie);
+                response.addCookie(full_name_cookie);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+%>
 
 <%
     String username = request.getParameter("username");
@@ -63,6 +112,7 @@
                 Integer session_age = Integer.valueOf(jsonObject.get("session_age").toString());
                 cookietoken.setMaxAge(session_age / 1000);
                 response.addCookie(cookietoken);
+                setUserInfo(response, token);
 //                out.println("date = " + session_age);
                 //Redirect to Dashboard
                 String reqURL = String.valueOf(request.getRequestURL());

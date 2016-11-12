@@ -6,8 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@include file="verifytoken.jsp" %>
-
+<%@ include file="verifytoken.jsp" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -63,8 +62,12 @@
 
 <h1 id="title"><span id="Sale">Sale</span><span id="Project">Project</span></h1>
 <div id="account">Hi, <span id="username"><%
-    if (getCookie(request, "full_name") != null) out.print(getCookie(request, "full_name").getValue());
-    else out.print("NULL");%></span><br><span id="logout"><a href="login.php" class="logout" >logout</a></span></div>
+    if (getCookie(request, "full_name") != null)
+        out.print(getCookie(request, "full_name").getValue());
+    else
+        out.print("NULL");
+
+%></span><br><span id="logout"><a href="login.jsp" class="logout" >logout</a></span></div>
 
 <table class="navbar">
     <tr>
