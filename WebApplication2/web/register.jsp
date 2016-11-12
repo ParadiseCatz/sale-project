@@ -57,58 +57,65 @@
         String FullAddress=request.getParameter("fulladdress");
         String PostalCode=request.getParameter("postalcode");
         String PhoneNumber=request.getParameter("phonenumber");
-    
-        String url = AppConfig.get("identity_service_url") + "/Register";
-        URL obj = new URL(url);
-        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-        //add reuqest header
-        con.setRequestMethod("POST");
-        con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
-        String urlParameters = "fullname=" + FullName + "&username=" + UserName
-                + "&email=" + Email + "&password=" + Password
-                + "&confirmpassword=" + ConfirmPassword + "&fulladdress=" + FullAddress
-                + "&postalcode=" + PostalCode + "&phonenumber=" + PhoneNumber;
-        // Send post request
-        con.setDoOutput(true);
-        DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-        wr.writeBytes(urlParameters);
-        wr.flush();
-        wr.close();
-        int responseCode = con.getResponseCode();
-        out.println("Sending POST to " + url);
-        out.println(urlParameters);
-        out.println("Response Code : " + responseCode);
-        if(responseCode == 200){
-            BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            String s = br.readLine();
-            out.println("Json = "+s);
-            JSONParser parser = new JSONParser();
-            try {
-                Object obj2 = parser.parse(s);
-                JSONObject jsonObject = (JSONObject) obj2;
-                String token = jsonObject.get("token").toString();
-                Cookie cookietoken = new Cookie("token",token);
-                out.println("token = " + token);
-                Integer session_age = Integer.valueOf(jsonObject.get("session_age").toString());
-                cookietoken.setMaxAge(session_age / 1000);
-                response.addCookie(cookietoken);
-                out.println("date = " + session_age);
-                //Redirect to Dashboard
-                String reqURL = String.valueOf(request.getRequestURL());
-                String redirectURL = reqURL.replaceFirst(request.getServletPath(), "/dashboard.jsp");
-                response.setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY);
-                response.setHeader("Location", redirectURL);
-            } catch (Exception e) {
-                    e.printStackTrace();
-            }
+        if (FullName!=null && UserName!=null && Email!=null && Password!=null
+                && ConfirmPassword!=null && FullAddress!=null && PostalCode!=null
+                && PhoneNumber!=null){
+        
+            
+            String url = AppConfig.get("identity_service_url") + "/Register";
+            URL obj = new URL(url);
+            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+            //add reuqest header
+            con.setRequestMethod("POST");
+            con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+            String urlParameters = "fullname=" + FullName + "&username=" + UserName
+                    + "&email=" + Email + "&password=" + Password
+                    + "&confirmpassword=" + ConfirmPassword + "&fulladdress=" + FullAddress
+                    + "&postalcode=" + PostalCode + "&phonenumber=" + PhoneNumber;
+            // Send post request
+            con.setDoOutput(true);
+            DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+            wr.writeBytes(urlParameters);
+            wr.flush();
+            wr.close();
+            int responseCode = con.getResponseCode();
+            out.println("Sending POST to " + url);
+            out.println(urlParameters);
+            out.println("Response Code : " + responseCode);
+            if(responseCode == 200){
+                BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                String s = br.readLine();
+                out.println("Json = "+s);
+                JSONParser parser = new JSONParser();
+                try {
+                    Object obj2 = parser.parse(s);
+                    JSONObject jsonObject = (JSONObject) obj2;
+                    String token = jsonObject.get("token").toString();
+                    Cookie cookietoken = new Cookie("token",token);
+                    out.println("token = " + token);
+                    Integer session_age = Integer.valueOf(jsonObject.get("session_age").toString());
+                    cookietoken.setMaxAge(session_age / 1000);
+                    response.addCookie(cookietoken);
+                    out.println("date = " + session_age);
+                    //Redirect to Dashboard
+                    String reqURL = String.valueOf(request.getRequestURL());
+                    String redirectURL = reqURL.replaceFirst(request.getServletPath(), "/dashboard.jsp");
+                    response.setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY);
+                    response.setHeader("Location", redirectURL);
+                } catch (Exception e) {
+                        e.printStackTrace();
+                }
 
+            }
+            else {
+                int responseCode2 = con.getResponseCode();
+                out.println("Response Code : " + responseCode2);
+                //response.setStatus(response.SC_MOVED_TEMPORARILY);
+                //response.setHeader("Location", site);
+            }
         }
-        else {
-            int responseCode2 = con.getResponseCode();
-            out.println("Response Code : " + responseCode2);
-            //response.setStatus(response.SC_MOVED_TEMPORARILY);
-            //response.setHeader("Location", site);
-        }
+        
+        
     
 %>
 

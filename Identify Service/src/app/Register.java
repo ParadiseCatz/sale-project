@@ -90,17 +90,14 @@ public class Register extends HttpServlet {
         String FullAddress=request.getParameter("fulladdress");
         String PostalCode=request.getParameter("postalcode");
         String PhoneNumber=request.getParameter("phonenumber");
+        String sql;
+        boolean isExist = true;
+        
         try {
             Statement stmt = AppDatabase.getConnection().createStatement();
-        } catch (SQLException ex) {
-            Logger.getLogger(Register.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        String sql;
-        boolean isExist = false;
-        sql="SELECT username,email FROM login WHERE username = '" + UserName + "' OR email= '" + Email + "' ";
-        try {
-            PreparedStatement pstmt2 = AppDatabase.getConnection().prepareStatement(sql);
-            ResultSet result=pstmt2.executeQuery();
+            sql="SELECT username,email FROM login WHERE username = \""+UserName+ "\"OR email=\""+Email+ "\"";
+            
+            ResultSet result=stmt.executeQuery(sql);
             if (!result.isBeforeFirst()){
                 isExist=false;
             }
@@ -115,6 +112,7 @@ public class Register extends HttpServlet {
             response.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE, "Username atau Email telah ada!");
         }
         else
+        if (!isExist)
         {
             try {
                 //sql="INSERT into data_pelanggan VALUES("+UserName+","+Email+","+Password+","+FullName+","+FullAddress+","+
@@ -150,6 +148,7 @@ public class Register extends HttpServlet {
                 } else {
                     response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Wrong Email or Password !");
                 }
+                
                 //out.println(buatToken());
             } catch (SQLException ex) {
                 Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
