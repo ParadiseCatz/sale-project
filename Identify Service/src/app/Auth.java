@@ -147,6 +147,7 @@ public class Auth extends HttpServlet {
             }
         } catch (SQLException ex) {
             Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.getSQLState());
         }
     }
 
