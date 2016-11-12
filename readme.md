@@ -105,7 +105,13 @@ Anda tidak dituntut untuk mengerjakan ini. Tetapi bila Anda cukup dewa (baca=ter
 Fokus terlebih dahulu menyelesaikan semua spesifikasi yang ada sebelum memikirkan bonus.
 
 ### Penjelasan
-Berikan penjelasan mengenai konsep diatas.
+    - Basis data dari sistem yang Anda buat.
+    Basis data yang kami buat, dipisah menjadi dua basis data, yaitu basis data iton_account untuk menyimpan data identitas pengguna, dan basis data iton_marketplace untuk menyimpan data barang. Iton_account terdiri dari tiga tabel. Tabel login berisi data pengguna yang digunakan untuk login. Tabel data_pelanggan menyimpan data lengkap dari pengguna yang terdaftar. Tabel session menyimpan sesi dan token dari pengguna yang sedang login saat ini. Basis data iton_marketplace terdiri dari tiga tabel yaitu barang, transaction, dan user_liked. Barang berisi informasi lengkap dari barang yang dijual pada marketplace. transaction, berisi seluruh transaksi penjualan dan pembelian yang terjadi pada marketplace. User_liked berisi informasi apakah pengguna telah me-like barang tertentu.
+    - Konsep *shared session* dengan menggunakan REST.
+    - Pembangkitan token dan expire time pada sistem yang anda buat.
+    - Kelebihan dan kelemahan dari arsitektur aplikasi tugas ini, dibandingkan dengan aplikasi monolitik (login, CRUD DB, dll jadi dalam satu aplikasi)
+    Kelebihan: Implementasi dari setiap bagian program dapat dikerjakan secara terpisah. Implementasi yang terpisah ini juga akan memudahkan proses debug dari program.
+    Kelemahan: Setiap bagian dari program yang dibuat saling bergantung satu - sama lain. Contohnya, web application akan bergantung pada jax-ws marketplace untuk menghubungi basis data. Hal ini dapat membuat proses pengerjaan program terhalang karena saling menunggu satu - sama lain.
 
 ### Pembagian Tugas
 "Gaji buta dilarang dalam tugas ini. Bila tak mengerti, luangkan waktu belajar lebih banyak. Bila belum juga mengerti, belajarlah bersama-sama kelompokmu. Bila Anda sekelompok bingung, bertanyalah (bukan menyontek) ke teman seangkatanmu. Bila seangkatan bingung, bertanyalah pada asisten manapun."
@@ -113,20 +119,32 @@ Berikan penjelasan mengenai konsep diatas.
 *Harap semua anggota kelompok mengerjakan SOAP dan REST API kedua-duanya*. Tuliskan pembagian tugas seperti berikut ini.
 
 REST :
-1. Generate token : 135130XX
-2. Validasi token : 135130XX
-3. Fungsionaltiax X : 135130XX
-4. ...
+1. Generate token : 13514001, 13514085
+2. Validasi token : 13514085
+3. Login : 13514001
+4. Register : 13514097
+5. Logout :
 
 SOAP :
-1. Add Produce : 135130xx
-2. Fungsionalitas Y : 135130xx
-3. ...
+1. Add Produk : 13514097
+2. Catalog  : 13514097
+3. Search Produk : 13514097
+4. Sales : 13514001
+5. Purchase : 13514001
+6. Edit Produk : 
+7. Delete Produk :
+8. Confirmation Purchase :
 
 Web app (JSP) :
-1. Halaman Login : 
-2. Halaman X :
-3. ...
+1. Halaman Login : 13514001
+2. Halaman Register : 13514097
+3. Halaman Dashboard : 13514085
+4. Halaman Catalog : 13514097
+5. Halaman Sales : 13514001
+6. Halaman Purchases : 13514001
+7. Halaman Your Product : 13514001
+8. Halaman Confirmation Purchase :
+9. Halaman Add Product : 13514085
 
 ## About
 
