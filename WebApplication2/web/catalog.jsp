@@ -5,6 +5,9 @@
   Time: 3:49 PM
   To change this template use File | Settings | File Templates.
 --%>
+<%@page import="java.text.DecimalFormatSymbols"%>
+<%@page import="java.text.DecimalFormat"%>
+<%@page import="java.util.Locale"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@include file="verifytoken.jsp" %>
 <html>
@@ -73,7 +76,7 @@
     <label for="filter" class="filter">by</label> <br>
     <input type="radio" name="filter" value="product" checked="">Product<br>
     <input type="radio" name="filter" value="store">Store<br>
-</form>
+</form> 
 <br>
 
     <%-- start web service invocation --%><hr/>

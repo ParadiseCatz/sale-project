@@ -203,4 +203,41 @@ public class Market {
         }
         return isLiked;
     }
+
+    /**
+     * Web service operation
+     */
+    @WebMethod(operationName = "sales")
+    public ArrayList<Produk> sales(@WebParam(name = "idpenjual") int idpenjual)  {
+        //TODO write your implementation code here:
+        ArrayList<Produk> daftarSales=new ArrayList<Produk>();     
+        Statement stmt = null;
+        try {
+            stmt = conn.createStatement();
+        } catch (SQLException ex) {
+            Logger.getLogger(Market.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        String query ;
+        query="SELECT * " +
+                "FROM `barang` " +
+                "WHERE id_penjual = " + idpenjual + ";";
+        ResultSet rs = null;
+        try {
+            rs = stmt.executeQuery(query);
+        } catch (SQLException ex) {
+            Logger.getLogger(Market.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            // Extract data from result set
+            while (rs.next()) {
+                daftarSales.add(new Produk(rs.getInt("id"),rs.getInt("id_penjual"),
+                        rs.getString("username"), rs.getString("nama_barang"),rs.getLong("harga"),
+                        rs.getString("deskripsi"),rs.getString("foto"),rs.getString("waktu_ditambahkan"),
+                        rs.getInt("jumlah_like"),rs.getInt("jumlah_dibeli")));                                       
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Market.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return daftarSales;
+    }
 }
