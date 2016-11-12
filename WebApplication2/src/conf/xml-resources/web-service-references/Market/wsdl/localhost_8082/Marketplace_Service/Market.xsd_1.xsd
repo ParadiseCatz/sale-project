@@ -16,13 +16,14 @@
 
 <xs:element name="listCatalogResponse" type="tns:listCatalogResponse"/>
 
-<<<<<<< HEAD
-=======
+<xs:element name="sales" type="tns:sales"/>
+
+<xs:element name="salesResponse" type="tns:salesResponse"/>
+
 <xs:element name="yourproduct" type="tns:yourproduct"/>
 
 <xs:element name="yourproductResponse" type="tns:yourproductResponse"/>
 
->>>>>>> 17375044d4dc56f34b1c7e7a17e234f2141ed5d9
 <xs:complexType name="addProduct">
 <xs:sequence>
 <xs:element name="userid" type="xs:int"/>
@@ -40,8 +41,6 @@
 </xs:sequence>
 </xs:complexType>
 
-<<<<<<< HEAD
-=======
 <xs:complexType name="yourproduct">
 <xs:sequence>
 <xs:element name="idpenjual" type="xs:int"/>
@@ -69,7 +68,6 @@
 </xs:sequence>
 </xs:complexType>
 
->>>>>>> 17375044d4dc56f34b1c7e7a17e234f2141ed5d9
 <xs:complexType name="checkLike">
 <xs:sequence>
 <xs:element name="id_user" type="xs:int"/>
@@ -97,24 +95,37 @@
 </xs:sequence>
 </xs:complexType>
 
-<<<<<<< HEAD
-<xs:complexType name="produk">
+<xs:complexType name="sales">
 <xs:sequence>
-<xs:element name="id" type="xs:int"/>
-<xs:element name="idPenjual" type="xs:int"/>
-<xs:element name="username" type="xs:string"/>
-<xs:element name="namaBarang" type="xs:string"/>
-<xs:element name="harga" type="xs:long"/>
-<xs:element name="deskripsi" type="xs:string"/>
-<xs:element name="namaFoto" type="xs:string"/>
-<xs:element name="waktuDitambahkan" type="xs:string"/>
-<xs:element name="jumlahLike" type="xs:int"/>
-<xs:element name="jumlahBeli" type="xs:int"/>
+<xs:element name="idpenjual" type="xs:int"/>
 </xs:sequence>
 </xs:complexType>
 
-=======
->>>>>>> 17375044d4dc56f34b1c7e7a17e234f2141ed5d9
+<xs:complexType name="salesResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:transaction" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="transaction">
+<xs:sequence>
+<xs:element name="id" type="xs:int"/>
+<xs:element name="id_pembeli" type="xs:int"/>
+<xs:element name="quantity" type="xs:int"/>
+<xs:element name="cosignee" type="xs:string"/>
+<xs:element name="full_address" type="xs:string"/>
+<xs:element name="postal_code" type="xs:int"/>
+<xs:element name="phone_number" type="xs:long"/>
+<xs:element name="creditcard_number" type="xs:long"/>
+<xs:element name="creditcard_verification" type="xs:int"/>
+<xs:element name="nama_barang" type="xs:string"/>
+<xs:element name="harga_barang" type="xs:long"/>
+<xs:element name="foto" type="xs:string"/>
+<xs:element name="id_penjual" type="xs:int"/>
+<xs:element name="waktu_transaksi" type="xs:string"/>
+</xs:sequence>
+</xs:complexType>
+
 <xs:complexType name="hello">
 <xs:sequence>
 <xs:element name="name" type="xs:string" minOccurs="0"/>

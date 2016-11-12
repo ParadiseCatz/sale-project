@@ -53,11 +53,11 @@ public class transaction {
     private int id_penjual;
     
     @XmlElement(name="waktu_transaksi", required=true)
-    private Date waktu_transaksi;
+    private String waktu_transaksi;
     
     public transaction (int id, int id_pembeli, int quantity, String cosignee, String full_address,
     int postal_code, long phone_number, long cc_number, int cc_ver, String namabarang, long harga, String foto,
-    int id_penjual, Date waktu_transaksi){
+    int id_penjual, String waktu_transaksi){
         this.id=id;
         this.id_pembeli=id_pembeli;
         this.quantity=quantity;
