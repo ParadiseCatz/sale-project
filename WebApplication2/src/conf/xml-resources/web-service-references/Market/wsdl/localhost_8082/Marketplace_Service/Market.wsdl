@@ -4,6 +4,12 @@
 <xsd:import namespace="http://Market/" schemaLocation="http://localhost:8082/Marketplace_Service/Market?xsd=1"/>
 </xsd:schema>
 </types>
+<message name="delete">
+<part name="parameters" element="tns:delete"/>
+</message>
+<message name="deleteResponse">
+<part name="parameters" element="tns:deleteResponse"/>
+</message>
 <message name="hello">
 <part name="parameters" element="tns:hello"/>
 </message>
@@ -47,6 +53,10 @@
 <part name="parameters" element="tns:checkLikeResponse"/>
 </message>
 <portType name="Market">
+<operation name="delete">
+<input wsam:Action="http://Market/Market/deleteRequest" message="tns:delete"/>
+<output wsam:Action="http://Market/Market/deleteResponse" message="tns:deleteResponse"/>
+</operation>
 <operation name="hello">
 <input wsam:Action="http://Market/Market/helloRequest" message="tns:hello"/>
 <output wsam:Action="http://Market/Market/helloResponse" message="tns:helloResponse"/>
@@ -78,6 +88,15 @@
 </portType>
 <binding name="MarketPortBinding" type="tns:Market">
 <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+<operation name="delete">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+</operation>
 <operation name="hello">
 <soap:operation soapAction=""/>
 <input>

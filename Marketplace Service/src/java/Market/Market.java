@@ -349,6 +349,7 @@ public class Market {
         return daftarSales;
     }
 
+    @WebMethod(operationName = "purchase")
     public ArrayList<transaction> purchase(@WebParam(name = "idpembeli") int idpembeli)  {
         //TODO write your implementation code here:
         ArrayList<transaction> daftarPurchase=new ArrayList<>();     
@@ -381,6 +382,27 @@ public class Market {
             Logger.getLogger(Market.class.getName()).log(Level.SEVERE, null, ex);
         }
         return daftarPurchase;
+    }
+    
+     @WebMethod(operationName = "delete")
+    public void delete(@WebParam(name = "idpenjual") int idpenjual, @WebParam(name = "idbarang") int idbarang, @WebParam(name = "namabarang") String namabarang)  {
+        //TODO write your implementation code here:
+        Statement stmt = null;
+        try {
+            stmt = conn.createStatement();
+        } catch (SQLException ex) {
+            Logger.getLogger(Market.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        String query ;
+        query=" DELETE " +
+                "FROM `barang` " +
+                "WHERE id = " + idbarang + " AND id_penjual = " + idpenjual + " AND nama_barang = " + namabarang + ";";
+        ResultSet rs = null;
+        try {
+            rs = stmt.executeQuery(query);
+        } catch (SQLException ex) {
+            Logger.getLogger(Market.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
 
