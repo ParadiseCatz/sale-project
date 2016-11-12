@@ -1,4 +1,5 @@
-<%--
+<%@ page import="java.util.Collection" %>
+<%@ page import="java.io.*" %><%--
   Created by IntelliJ IDEA.
   User: Joshua
   Date: 11/4/2016
@@ -10,13 +11,13 @@
 <html>
 <head>
     <link rel="stylesheet" type="text/css" href="style.css">
-    <script src="validation.js"></script>
+    <%--<script src="validation.js"></script>--%>
     <title>Add Product</title>
 </head>
 <body>
 <h2 class="pagetitle">Please add your product here</h2>
 <hr>
-<form id="AddProductForm" onsubmit="return validateAddProduct(this)" method="post" action="addproductaction.php" enctype="multipart/form-data">
+<form id="AddProductForm" method="post" action="addproductaction.jsp" enctype="multipart/form-data">
     <input type="hidden" name="userid" value="">
     <label for="Name">Name</label>
     <input type="text" id="Name" name="name"><br>
@@ -25,9 +26,11 @@
     <label for="Price">Price (IDR)</label>
     <input type="text" id="Price" name="price"><br>
     <label for="File">Photo</label>
-    <input type="file" id="File" accept="image/*" name="uploadedfile"><br>
+    <input type="File" id="File" accept="image/*" name="uploadedfile"><br>
     <div id="tombol"><input type="submit" class="button" value="Add" id="Add">
         <input type="button" class="button" value="Cancel" onclick="window.history.back();"></div>
 </form>
+
 </body>
 </html>
+

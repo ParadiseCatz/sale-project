@@ -6,12 +6,20 @@
 package Market;
 
 
+import javax.annotation.Resource;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebResult;
 import javax.jws.WebService;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.xml.ws.WebServiceContext;
+import javax.xml.ws.handler.MessageContext;
+import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,7 +30,67 @@ import java.util.logging.Logger;
  */
 @WebService(serviceName = "Market")
 public class Market {
-    
+
+
+
+    @Resource
+    private WebServiceContext context;
+
+    private Cookie getCookie(HttpServletRequest request, String key){
+        Cookie[] cookies;
+        cookies = request.getCookies();
+        if( cookies != null ) {
+            for (Cookie cookie : cookies) {
+                if (Objects.equals(cookie.getName(), key)) {
+                    return cookie;
+                }
+            }
+        }
+        return null;
+    }
+
+    private boolean authenticate() throws IOException {
+        MessageContext messageContext = context.getMessageContext();
+        HttpServletRequest request = (HttpServletRequest) messageContext.get(MessageContext.SERVLET_REQUEST);
+        HttpServletResponse response = (HttpServletResponse) messageContext.get(MessageContext.SERVLET_RESPONSE);
+        System.err.println(getCookie(request, "token") + " ASDASDASD");
+
+        String reqURL = String.valueOf(request.getRequestURL());
+        String redirectURL = reqURL.replaceFirst(request.getServletPath(), "/login.jsp");
+        response.setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY);
+        response.setHeader("Location", redirectURL);
+//        String url = AppConfig.get("identity_service_url") + "/Auth";
+//        URL obj = new URL(url);
+//        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+//        //add request header
+//        con.setRequestMethod("POST");
+//        con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+//        String urlParameters = "token=" + token;
+//        con.setDoOutput(true);
+//        DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+//        wr.writeBytes(urlParameters);
+//        wr.flush();
+//        wr.close();
+//        int responseCode = con.getResponseCode();
+//        if (responseCode == 200) {
+//            BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+//            String s = br.readLine();
+//            JSONParser parser = new JSONParser();
+//            try {
+//                Object obj2 = parser.parse(s);
+//                JSONObject jsonObject = (JSONObject) obj2;
+//                Integer session_age = Integer.valueOf(jsonObject.get("session_age").toString());
+//                tokenCookie.setMaxAge(session_age / 1000);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//            setUserInfo(response, token);
+//        } else {
+//            redirectToLogin(request, response);
+//        }
+        return true;
+    }
+
     //Connect to database
     Connection conn=getConnection();
     
@@ -31,7 +99,7 @@ public class Market {
         Connection conn = null;
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            conn=DriverManager.getConnection(AppConfig.get("db_url"), AppConfig.get("db_user"), AppConfig.get("db_password"));
+            conn=DriverManager.getConnection(AppConfig.get("db_url"), AppConfig.get("db_user"), AppConfig.get("db_pass"));
         } catch (SQLException ex) {
             Logger.getLogger(Market.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException ex) {
@@ -126,6 +194,11 @@ public class Market {
     public Boolean addProduct(@WebParam(name = "userid") int userid, @WebParam(name = "username") 
             String username, @WebParam(name = "nama") String nama, @WebParam(name = "description")
                     String description, @WebParam(name = "price") String price, @WebParam(name = "foto") String foto) {
+        try {
+            authenticate();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         //TODO write your implementation code here:
         if ((nama.isEmpty()) || (description.isEmpty()) || (price.isEmpty()) ||
                 (foto.isEmpty()) || (userid==0) || (username.isEmpty())){
