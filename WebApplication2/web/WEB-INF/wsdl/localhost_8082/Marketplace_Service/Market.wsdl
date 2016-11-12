@@ -16,6 +16,18 @@
 <message name="helloResponse">
 <part name="parameters" element="tns:helloResponse"/>
 </message>
+<message name="addProduct">
+<part name="parameters" element="tns:addProduct"/>
+</message>
+<message name="addProductResponse">
+<part name="parameters" element="tns:addProductResponse"/>
+</message>
+<message name="checkLike">
+<part name="parameters" element="tns:checkLike"/>
+</message>
+<message name="checkLikeResponse">
+<part name="parameters" element="tns:checkLikeResponse"/>
+</message>
 <portType name="Market">
 <operation name="listCatalog">
 <input wsam:Action="http://Market/Market/listCatalogRequest" message="tns:listCatalog"/>
@@ -24,6 +36,14 @@
 <operation name="hello">
 <input wsam:Action="http://Market/Market/helloRequest" message="tns:hello"/>
 <output wsam:Action="http://Market/Market/helloResponse" message="tns:helloResponse"/>
+</operation>
+<operation name="addProduct">
+<input wsam:Action="http://Market/Market/addProductRequest" message="tns:addProduct"/>
+<output wsam:Action="http://Market/Market/addProductResponse" message="tns:addProductResponse"/>
+</operation>
+<operation name="checkLike">
+<input wsam:Action="http://Market/Market/checkLikeRequest" message="tns:checkLike"/>
+<output wsam:Action="http://Market/Market/checkLikeResponse" message="tns:checkLikeResponse"/>
 </operation>
 </portType>
 <binding name="MarketPortBinding" type="tns:Market">
@@ -38,6 +58,24 @@
 </output>
 </operation>
 <operation name="hello">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+</operation>
+<operation name="addProduct">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+</operation>
+<operation name="checkLike">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
