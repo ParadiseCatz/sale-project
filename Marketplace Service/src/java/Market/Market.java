@@ -276,4 +276,77 @@ public class Market {
         }
         return isLiked;
     }
+
+    /**
+     * Web service operation
+     */
+    @WebMethod(operationName = "yourproduct")
+    public ArrayList<Produk> yourproduct(@WebParam(name = "idpenjual") int idpenjual)  {
+        //TODO write your implementation code here:
+        ArrayList<Produk> daftarProduk=new ArrayList<Produk>();     
+        Statement stmt = null;
+        try {
+            stmt = conn.createStatement();
+        } catch (SQLException ex) {
+            Logger.getLogger(Market.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        String query ;
+        query="SELECT * " +
+                "FROM `barang` " +
+                "WHERE id_penjual = " + idpenjual + ";";
+        ResultSet rs = null;
+        try {
+            rs = stmt.executeQuery(query);
+        } catch (SQLException ex) {
+            Logger.getLogger(Market.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            // Extract data from result set
+            while (rs.next()) {
+                daftarProduk.add(new Produk(rs.getInt("id"),rs.getInt("id_penjual"),
+                        rs.getString("username"), rs.getString("nama_barang"),rs.getLong("harga"),
+                        rs.getString("deskripsi"),rs.getString("foto"),rs.getString("waktu_ditambahkan"),
+                        rs.getInt("jumlah_like"),rs.getInt("jumlah_dibeli")));                                       
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Market.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return daftarProduk;
+    }
+    
+    @WebMethod(operationName = "sales")
+    public ArrayList<transaction> sales(@WebParam(name = "idpenjual") int idpenjual)  {
+        //TODO write your implementation code here:
+        ArrayList<transaction> daftarSales=new ArrayList<>();     
+        Statement stmt = null;
+        try {
+            stmt = conn.createStatement();
+        } catch (SQLException ex) {
+            Logger.getLogger(Market.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        String query ;
+        query="SELECT * " +
+                "FROM `transaction` " +
+                "WHERE id_penjual = " + idpenjual + ";";
+        ResultSet rs = null;
+        try {
+            rs = stmt.executeQuery(query);
+        } catch (SQLException ex) {
+            Logger.getLogger(Market.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            // Extract data from result set
+            while (rs.next()) {
+                daftarSales.add(new transaction(rs.getInt("id"),rs.getInt("id_pembeli"),
+                        rs.getInt("quantity"), rs.getString("cosignee"),rs.getString("full_address"),
+                        rs.getInt("postal_code"),rs.getLong("phone_number"),rs.getLong("creditcard_number"),
+                        rs.getInt("creditcard_verification"),rs.getString("nama_barang"),rs.getLong("harga_barang"),
+                        rs.getString("foto"),rs.getInt("id_penjual"),rs.getDate("waktu_transaksi")));                                       
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Market.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return daftarSales;
+    }
+    
 }

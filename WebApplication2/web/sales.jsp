@@ -2,13 +2,14 @@
   Created by IntelliJ IDEA.
   User: Joshua
   Date: 11/4/2016
-  Time: 3:52 PM
+  Time: 3:49 PM
   To change this template use File | Settings | File Templates.
 --%>
+<%@page import="java.text.DecimalFormatSymbols"%>
+<%@page import="java.text.DecimalFormat"%>
+<%@page import="java.util.Locale"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@include file="verifytoken.jsp" %>
-<!DOCTYPE html>
-
 <html>
 <head>
     <title>Sales</title>
@@ -17,73 +18,106 @@
 <body>
 <h2 class="pagetitle">Here are your sales</h2>
 <hr>
-<?php
-		include("config.php");
-		$userid = $_GET["userid"];
-		$sql = "
-			SELECT *
-	        FROM   transaction
-	        WHERE  id_penjual = " . $userid . "
-	        ORDER BY waktu_transaksi DESC
-	       ";
+    <%
+        int userid;
+        if (getCookie(request,"user_id")!=null){
+            userid=Integer.parseInt(getCookie(request,"user_id").getValue());
+            out.println("<input type=\"hidden\" name=\"userid\" value="+userid+">");
+        }
+        else
+        {
+            userid=-1;
+        }
+    %>
+<br>
 
-		$result = mysqli_query($db, $sql);
-		if (!$result) {
-		    echo "Could not successfully run query ($sql) from DB: " . mysql_error();
-		    exit;
-		}
-		if (mysqli_num_rows($result) == 0) {
-			echo "<h3 class=\"pagetitle\">You haven't yet purchase any product!</h2>";
-exit;
-}
-function fetch_username($userid, $db) {
-$username_query = "SELECT username FROM login WHERE id = " . $userid . ";";
-$username_query_result = mysqli_query($db,$username_query);
-$fetch = mysqli_fetch_array($username_query_result,MYSQLI_ASSOC);
-return $fetch["username"];
-}
-function fetch_full_name($userid, $db) {
-$full_name_query = "SELECT full_name FROM data_pelanggan WHERE id = " . $userid . ";";
-$full_name_query_result = mysqli_query($db,$full_name_query);
-$fetch = mysqli_fetch_array($full_name_query_result,MYSQLI_ASSOC);
-return $fetch["full_name"];
-}
+    <%-- start web service invocation --%><hr/>
+    <%
+    if (userid!=-1){
+        try {
+            market.Market_Service service = new market.Market_Service();
+            market.Market port = service.getMarketPort();
+             // TODO initialize WS operation arguments here
+            int userID = userid;
+            // TODO process result here
+            java.util.List<market.Produk> result = port.sales(userID);
 
-while ($row = mysqli_fetch_assoc($result)) {
-echo "<div class=\"chunk\">";
-    $time = strtotime($row["waktu_transaksi"]);
-    echo "<div class=\"username\">" . date('l',$time), ", " . date('d',$time), " " . date('F',$time)," " .date('Y',$time), "</div>" ;
-    echo "<div class=\"tanggal\"> at " . date('H',$time), "." . date('i',$time), "</div>" ;
-    echo "<hr>";
+            for (market.Produk temp:result){
+                //Looping melakukan print catalog
+                out.println("<div class=\"username\">" + temp.getUsername() + "</div>");
+                out.println("<div class=\"tanggal\"> added this on "+ temp.getWaktuDitambahkan() + "</div>");
+                out.println("<hr>");
+                out.println("<div class=\"container\">");
+                out.println("<div class=\"divGambar\">");
 
-    echo "<div class=\"container\">";
-        //echo gambar berdasarkan source
-        echo "<div class=\"divGambar\">";
-            echo "<img src=\"" . $row["path_foto"]. "\" class=\"GambarKatalog\">";
-            echo "</div>";
+                //TODO BENERIN PRINT FOTO
+                out.println("<img src=\"" + temp.getNamaFoto() + "\" class=\"GambarKatalog\">");
+                //TODO
 
-        //echo keterangan item
-        echo "<div class=\"divDesc\">";
-            echo "<span class=\"NamaBarang\">" . $row["nama_barang"], "</span><br>";
-            $total_harga = $row["harga_barang"]*$row["quantity"];
-            echo "<span class=\"HargaBarang\"> IDR " . number_format($total_harga, 0, ',', '.'), "</span><br>";
-            echo "<span class=\"HargaBarang\">" . $row["quantity"] . " pcs</span><br>";
-            echo "<span class=\"HargaBarang\"> @IDR " . number_format($row["harga_barang"], 0, ',', '.'), "</span><br>";
-            echo "<br>";
-            echo "<span class=\"DeskripsiBarang\">bought by <b>" . fetch_full_name($row["id_penjual"], $db), "</b></span><br>";
-            echo "</div>";
+                out.println("</div>");
+                out.println("<div class=\"divDesc\">");
+                out.println("<span class=\"NamaBarang\">"+ temp.getNamaBarang()+"</span><br>");
+                DecimalFormat formatter=new DecimalFormat("###,###,###",DecimalFormatSymbols.getInstance(Locale.GERMANY));
 
-        //echo invoice
-        echo "<div class=\"divInvoice\">";
-            echo "<span>Delivery to <b>" . $row["cosignee"], "</b></span><br>";
-            echo "<span>" . nl2br($row["full_address"]), "</span><br>";
-            echo "<span>" . $row["postal_code"], "</span><br>";
-            echo "<span>" . $row["phone_number"], "</span><br>";
-            echo "</div>";
-        echo "</div>";
-    echo "<br><hr>";
-    echo "</div>";
-}
-?>
+                out.println("<span class=\"HargaBarang\"> IDR " + formatter.format(temp.getHarga()) + "</span><br>");
+                out.println("<span class=\"DeskripsiBarang\">"+ temp.getDeskripsi() +"</span><br>");
+                out.println("</div>");
+                out.println("<div class=\"divLike\">");
+                String id_barang=Integer.toString(temp.getId());
+                String jumlah_like=Integer.toString(temp.getJumlahLike());
+                out.println("<span id=\"productlikes#"+id_barang+"\">" +jumlah_like+"</span> likes<br>");
+                String jumlah_beli=Integer.toString(temp.getJumlahBeli());
+                out.println(jumlah_beli +"  purchases<br><br>");
+
+                //jax ws mengecek jumlah like
+                try {
+                     // TODO initialize WS operation arguments here
+                    int idUser = userid;
+                    int idBarang = temp.getId();
+                    // TODO process result here
+                    java.lang.Boolean resultLike = port.checkLike(idUser, idBarang);
+                    if (resultLike=true){
+                        //kasus jika sudah like
+                        out.println("<span class=\"like\" data-product-id=\""+idBarang+"\">LIKE");
+                    }
+                    else
+                    {
+                        //kasus jika belum like
+                        out.println("<span class=\"liked\" data-product-id=\""+idBarang+"\">LIKED");
+                    }
+                    out.println("</span>");
+                    String urlPurchase;
+                    urlPurchase="ConfirmationPurchase.php?userid_pembeli="+idUser
+                            +"&userid_penjual="+temp.getIdPenjual()+"&nama_barang="
+                            +temp.getNamaBarang()+"&path_foto="+temp.getNamaFoto()
+                            +"&harga_barang="+temp.getHarga()+"&id_barang="
+                            +temp.getId();
+                    out.println("<a href=\""+urlPurchase+"\" class=\"buy\">BUY</a>");
+                    out.println("</div>");
+                    out.println("</div>");
+                    out.println("<br><hr>");
+                } catch (Exception ex) {
+                    // TODO handle custom exceptions here
+                }
+
+
+
+
+
+            }
+
+        } catch (Exception ex) {
+            // TODO handle custom exceptions here
+
+            out.println("<h1>" + ex.toString()+"</h1>");
+        }
+    }
+    else
+    {
+        out.println("<h1>Cookie NULL</h1>");
+    }
+        %>    
+    <%-- end web service invocation --%>
+
 </body>
 </html>
