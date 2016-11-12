@@ -13,11 +13,11 @@
 
 <html>
 <head>
-	<title>Sales</title>
+	<title>Purchases</title>
 	<link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-	<h2 class="pagetitle">Here are your sales</h2>
+	<h2 class="pagetitle">Here are your purchases</h2>
 	
         <%
         int userid;
@@ -40,7 +40,7 @@
              // TODO initialize WS operation arguments here
             int userID = userid;
             // TODO process result here
-            java.util.List<market.Transaction> result = port.sales(userID);
+            java.util.List<market.Transaction> result = port.purchase(userID);
             int jumlah = 0 ;
             for (market.Transaction temp2:result){
                 ++jumlah;
@@ -74,7 +74,7 @@
                 }
             }
             else{
-                out.println("<h2 class=\"pagetitle\">You have no purchases, please buy something first !</h2>");
+                out.println("<h2 class=\"pagetitle\">You haven't yet purchase any product !</h2>");
             }
 
         } catch (Exception ex) {

@@ -4,11 +4,11 @@
 <xsd:import namespace="http://Market/" schemaLocation="http://localhost:8082/Marketplace_Service/Market?xsd=1"/>
 </xsd:schema>
 </types>
-<message name="checkLike">
-<part name="parameters" element="tns:checkLike"/>
+<message name="hello">
+<part name="parameters" element="tns:hello"/>
 </message>
-<message name="checkLikeResponse">
-<part name="parameters" element="tns:checkLikeResponse"/>
+<message name="helloResponse">
+<part name="parameters" element="tns:helloResponse"/>
 </message>
 <message name="yourproduct">
 <part name="parameters" element="tns:yourproduct"/>
@@ -16,17 +16,11 @@
 <message name="yourproductResponse">
 <part name="parameters" element="tns:yourproductResponse"/>
 </message>
-<message name="addProduct">
-<part name="parameters" element="tns:addProduct"/>
+<message name="sales">
+<part name="parameters" element="tns:sales"/>
 </message>
-<message name="addProductResponse">
-<part name="parameters" element="tns:addProductResponse"/>
-</message>
-<message name="hello">
-<part name="parameters" element="tns:hello"/>
-</message>
-<message name="helloResponse">
-<part name="parameters" element="tns:helloResponse"/>
+<message name="salesResponse">
+<part name="parameters" element="tns:salesResponse"/>
 </message>
 <message name="listCatalog">
 <part name="parameters" element="tns:listCatalog"/>
@@ -34,41 +28,57 @@
 <message name="listCatalogResponse">
 <part name="parameters" element="tns:listCatalogResponse"/>
 </message>
-<message name="sales">
-<part name="parameters" element="tns:sales"/>
+<message name="addProduct">
+<part name="parameters" element="tns:addProduct"/>
 </message>
-<message name="salesResponse">
-<part name="parameters" element="tns:salesResponse"/>
+<message name="addProductResponse">
+<part name="parameters" element="tns:addProductResponse"/>
+</message>
+<message name="purchase">
+<part name="parameters" element="tns:purchase"/>
+</message>
+<message name="purchaseResponse">
+<part name="parameters" element="tns:purchaseResponse"/>
+</message>
+<message name="checkLike">
+<part name="parameters" element="tns:checkLike"/>
+</message>
+<message name="checkLikeResponse">
+<part name="parameters" element="tns:checkLikeResponse"/>
 </message>
 <portType name="Market">
-<operation name="checkLike">
-<input wsam:Action="http://Market/Market/checkLikeRequest" message="tns:checkLike"/>
-<output wsam:Action="http://Market/Market/checkLikeResponse" message="tns:checkLikeResponse"/>
+<operation name="hello">
+<input wsam:Action="http://Market/Market/helloRequest" message="tns:hello"/>
+<output wsam:Action="http://Market/Market/helloResponse" message="tns:helloResponse"/>
 </operation>
 <operation name="yourproduct">
 <input wsam:Action="http://Market/Market/yourproductRequest" message="tns:yourproduct"/>
 <output wsam:Action="http://Market/Market/yourproductResponse" message="tns:yourproductResponse"/>
 </operation>
-<operation name="addProduct">
-<input wsam:Action="http://Market/Market/addProductRequest" message="tns:addProduct"/>
-<output wsam:Action="http://Market/Market/addProductResponse" message="tns:addProductResponse"/>
-</operation>
-<operation name="hello">
-<input wsam:Action="http://Market/Market/helloRequest" message="tns:hello"/>
-<output wsam:Action="http://Market/Market/helloResponse" message="tns:helloResponse"/>
+<operation name="sales">
+<input wsam:Action="http://Market/Market/salesRequest" message="tns:sales"/>
+<output wsam:Action="http://Market/Market/salesResponse" message="tns:salesResponse"/>
 </operation>
 <operation name="listCatalog">
 <input wsam:Action="http://Market/Market/listCatalogRequest" message="tns:listCatalog"/>
 <output wsam:Action="http://Market/Market/listCatalogResponse" message="tns:listCatalogResponse"/>
 </operation>
-<operation name="sales">
-<input wsam:Action="http://Market/Market/salesRequest" message="tns:sales"/>
-<output wsam:Action="http://Market/Market/salesResponse" message="tns:salesResponse"/>
+<operation name="addProduct">
+<input wsam:Action="http://Market/Market/addProductRequest" message="tns:addProduct"/>
+<output wsam:Action="http://Market/Market/addProductResponse" message="tns:addProductResponse"/>
+</operation>
+<operation name="purchase">
+<input wsam:Action="http://Market/Market/purchaseRequest" message="tns:purchase"/>
+<output wsam:Action="http://Market/Market/purchaseResponse" message="tns:purchaseResponse"/>
+</operation>
+<operation name="checkLike">
+<input wsam:Action="http://Market/Market/checkLikeRequest" message="tns:checkLike"/>
+<output wsam:Action="http://Market/Market/checkLikeResponse" message="tns:checkLikeResponse"/>
 </operation>
 </portType>
 <binding name="MarketPortBinding" type="tns:Market">
 <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
-<operation name="checkLike">
+<operation name="hello">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
@@ -86,16 +96,7 @@
 <soap:body use="literal"/>
 </output>
 </operation>
-<operation name="addProduct">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-<output>
-<soap:body use="literal"/>
-</output>
-</operation>
-<operation name="hello">
+<operation name="sales">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
@@ -113,7 +114,25 @@
 <soap:body use="literal"/>
 </output>
 </operation>
-<operation name="sales">
+<operation name="addProduct">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+</operation>
+<operation name="purchase">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+</operation>
+<operation name="checkLike">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>

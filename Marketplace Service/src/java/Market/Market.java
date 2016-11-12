@@ -349,7 +349,7 @@ public class Market {
         return daftarSales;
     }
     
-    @WebMethod(operationName = "sales")
+    @WebMethod(operationName = "purchase")
     public ArrayList<transaction> purchase(@WebParam(name = "idpembeli") int idpembeli)  {
         //TODO write your implementation code here:
         ArrayList<transaction> daftarPurchase=new ArrayList<>();     
