@@ -65,10 +65,17 @@
 <body>
 <h2 class="pagetitle">What are you going to buy today?</h2>
 <hr>
-<form action="catalog.jsp" id="search" method="GET">
+<form action="catalog.jsp"  method="GET">
     <%
-        int userid=Integer.parseInt(request.getParameter("userid"));
-	out.println("<input type=\"hidden\" name=\"userid\" value="+userid+">");
+        int userid;
+        if (getCookie(request,"user_id")!=null){
+            userid=Integer.parseInt(getCookie(request,"user_id").getValue());
+            out.println("<input type=\"hidden\" name=\"userid\" value="+userid+">");
+        }
+        else
+        {
+            userid=-1;
+        }
     %>
     <input name="searchkey" type="text" placeholder="Search catalog ..." id="Search" autofocus="1">
     <input type="submit" value="GO" id="GO" class="button">
@@ -81,87 +88,96 @@
 
     <%-- start web service invocation --%><hr/>
     <%
-    try {
-	market.Market_Service service = new market.Market_Service();
-	market.Market port = service.getMarketPort();
-	 // TODO initialize WS operation arguments here
-	int userID = userid;
-	java.lang.String searchType = request.getParameter("filter");
-	java.lang.String searchKey = request.getParameter("searchkey");
-	// TODO process result here
-	java.util.List<market.Produk> result = port.listCatalog(userID, searchType, searchKey);
-        
-        for (market.Produk temp:result){
-            //Looping melakukan print catalog
-            out.println("<div class=\"username\">" + temp.getUsername() + "</div>");
-            out.println("<div class=\"tanggal\"> added this on "+ temp.getWaktuDitambahkan() + "</div>");
-            out.println("<hr>");
-            out.println("<div class=\"container\">");
-            out.println("<div class=\"divGambar\">");
-            
-            //TODO BENERIN PRINT FOTO
-            out.println("<img src=\"" + temp.getNamaFoto() + "\" class=\"GambarKatalog\">");
-            //TODO
-            
-            out.println("</div>");
-            out.println("<div class=\"divDesc\">");
-            out.println("<span class=\"NamaBarang\">"+ temp.getNamaBarang()+"</span><br>");
-            DecimalFormat formatter=new DecimalFormat("###,###,###",DecimalFormatSymbols.getInstance(Locale.GERMANY));
-            
-            out.println("<span class=\"HargaBarang\"> IDR " + formatter.format(temp.getHarga()) + "</span><br>");
-            out.println("<span class=\"DeskripsiBarang\">"+ temp.getDeskripsi() +"</span><br>");
-            out.println("</div>");
-            out.println("<div class=\"divLike\">");
-            String id_barang=Integer.toString(temp.getId());
-            String jumlah_like=Integer.toString(temp.getJumlahLike());
-            out.println("<span id=\"productlikes#"+id_barang+"\">" +jumlah_like+"</span> likes<br>");
-            String jumlah_beli=Integer.toString(temp.getJumlahBeli());
-            out.println(jumlah_beli +"  purchases<br><br>");
-            
-            //jax ws mengecek jumlah like
-            try {
-                 // TODO initialize WS operation arguments here
-                int idUser = userid;
-                int idBarang = temp.getId();
-                // TODO process result here
-                java.lang.Boolean resultLike = port.checkLike(idUser, idBarang);
-                if (resultLike=true){
-                    //kasus jika sudah like
-                    out.println("<span class=\"like\" data-product-id=\""+idBarang+"\">LIKE");
-                }
-                else
-                {
-                    //kasus jika belum like
-                    out.println("<span class=\"liked\" data-product-id=\""+idBarang+"\">LIKED");
-                }
-                out.println("</span>");
-                String urlPurchase;
-                urlPurchase="ConfirmationPurchase.php?userid_pembeli="+idUser
-                        +"&userid_penjual="+temp.getIdPenjual()+"&nama_barang="
-                        +temp.getNamaBarang()+"&path_foto="+temp.getNamaFoto()
-                        +"&harga_barang="+temp.getHarga()+"&id_barang="
-                        +temp.getId();
-                out.println("<a href=\""+urlPurchase+"\" class=\"buy\">BUY</a>");
+    if (userid!=-1){
+        try {
+            market.Market_Service service = new market.Market_Service();
+            market.Market port = service.getMarketPort();
+             // TODO initialize WS operation arguments here
+            int userID = userid;
+            java.lang.String searchType = request.getParameter("filter");
+            java.lang.String searchKey = request.getParameter("searchkey");
+            // TODO process result here
+            java.util.List<market.Produk> result = port.listCatalog(userID, searchType, searchKey);
+
+            for (market.Produk temp:result){
+                //Looping melakukan print catalog
+                out.println("<div class=\"username\">" + temp.getUsername() + "</div>");
+                out.println("<div class=\"tanggal\"> added this on "+ temp.getWaktuDitambahkan() + "</div>");
+                out.println("<hr>");
+                out.println("<div class=\"container\">");
+                out.println("<div class=\"divGambar\">");
+
+                //TODO BENERIN PRINT FOTO
+                out.println("<img src=\"" + temp.getNamaFoto() + "\" class=\"GambarKatalog\">");
+                //TODO
+
                 out.println("</div>");
+                out.println("<div class=\"divDesc\">");
+                out.println("<span class=\"NamaBarang\">"+ temp.getNamaBarang()+"</span><br>");
+                DecimalFormat formatter=new DecimalFormat("###,###,###",DecimalFormatSymbols.getInstance(Locale.GERMANY));
+
+                out.println("<span class=\"HargaBarang\"> IDR " + formatter.format(temp.getHarga()) + "</span><br>");
+                out.println("<span class=\"DeskripsiBarang\">"+ temp.getDeskripsi() +"</span><br>");
                 out.println("</div>");
-                out.println("<br><hr>");
-            } catch (Exception ex) {
-                // TODO handle custom exceptions here
+                out.println("<div class=\"divLike\">");
+                String id_barang=Integer.toString(temp.getId());
+                String jumlah_like=Integer.toString(temp.getJumlahLike());
+                out.println("<span id=\"productlikes#"+id_barang+"\">" +jumlah_like+"</span> likes<br>");
+                String jumlah_beli=Integer.toString(temp.getJumlahBeli());
+                out.println(jumlah_beli +"  purchases<br><br>");
+
+                //jax ws mengecek jumlah like
+                try {
+                     // TODO initialize WS operation arguments here
+                    int idUser = userid;
+                    int idBarang = temp.getId();
+                    // TODO process result here
+                    java.lang.Boolean resultLike = port.checkLike(idUser, idBarang);
+                    if (resultLike=true){
+                        //kasus jika sudah like
+                        out.println("<span class=\"like\" data-product-id=\""+idBarang+"\">LIKE");
+                    }
+                    else
+                    {
+                        //kasus jika belum like
+                        out.println("<span class=\"liked\" data-product-id=\""+idBarang+"\">LIKED");
+                    }
+                    out.println("</span>");
+                    String urlPurchase;
+                    urlPurchase="ConfirmationPurchase.php?userid_pembeli="+idUser
+                            +"&userid_penjual="+temp.getIdPenjual()+"&nama_barang="
+                            +temp.getNamaBarang()+"&path_foto="+temp.getNamaFoto()
+                            +"&harga_barang="+temp.getHarga()+"&id_barang="
+                            +temp.getId();
+                    out.println("<a href=\""+urlPurchase+"\" class=\"buy\">BUY</a>");
+                    out.println("</div>");
+                    out.println("</div>");
+                    out.println("<br><hr>");
+                } catch (Exception ex) {
+                    // TODO handle custom exceptions here
+                }
+
+
+
+
+
             }
-            
-            
-            
-           
-            
+
+        } catch (Exception ex) {
+            // TODO handle custom exceptions here
+
+            out.println("<h1>" + ex.toString()+"</h1>");
         }
-	
-    } catch (Exception ex) {
-	// TODO handle custom exceptions here
-        
-        out.println("<h1>" + ex.toString()+"</h1>");
     }
-    %>
-    <%-- end web service invocation --%><hr/>
+    else
+    {
+        out.println("<h1>Cookie NULL</h1>");
+    }
+        %>
+   
+    
+    
+    <%-- end web service invocation --%>
 
    
 

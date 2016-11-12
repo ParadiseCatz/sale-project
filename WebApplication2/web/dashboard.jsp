@@ -62,9 +62,13 @@
 <body>
 
 <h1 id="title"><span id="Sale">Sale</span><span id="Project">Project</span></h1>
-<div id="account">Hi, <span id="username"><%
+<div id="account">Hi, <span id="username">
+        
+        <%
     if (getCookie(request, "full_name") != null) out.print(getCookie(request, "full_name").getValue());
-    else out.print("NULL");%></span><br><span id="logout"><a href="login.php" class="logout" >logout</a></span></div>
+    else out.print("NULL");%>
+    
+    </span><br><span id="logout"><a href="login.php" class="logout" >logout</a></span></div>
 
 <table class="navbar">
     <tr>
