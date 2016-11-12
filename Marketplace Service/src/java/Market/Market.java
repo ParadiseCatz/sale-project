@@ -207,8 +207,8 @@ public class Market {
     /**
      * Web service operation
      */
-    @WebMethod(operationName = "sales")
-    public ArrayList<Produk> sales(@WebParam(name = "idpenjual") int idpenjual)  {
+    @WebMethod(operationName = "yourproduct")
+    public ArrayList<Produk> yourproduct(@WebParam(name = "idpenjual") int idpenjual)  {
         //TODO write your implementation code here:
         ArrayList<Produk> daftarSales=new ArrayList<Produk>();     
         Statement stmt = null;
