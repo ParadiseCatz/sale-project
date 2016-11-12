@@ -268,7 +268,7 @@ public class Market {
                         rs.getInt("quantity"), rs.getString("cosignee"),rs.getString("full_address"),
                         rs.getInt("postal_code"),rs.getLong("phone_number"),rs.getLong("creditcard_number"),
                         rs.getInt("creditcard_verification"),rs.getString("nama_barang"),rs.getLong("harga_barang"),
-                        rs.getString("foto"),rs.getInt("id_penjual"),rs.getDate("waktu_transaksi")));                                       
+                        rs.getString("foto"),rs.getInt("id_penjual"),rs.getString("waktu_transaksi")));                                       
             }
         } catch (SQLException ex) {
             Logger.getLogger(Market.class.getName()).log(Level.SEVERE, null, ex);
