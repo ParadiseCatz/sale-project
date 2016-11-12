@@ -68,6 +68,17 @@ INSERT INTO `login` (`email`, `username`, `password`, `id`) VALUES
 ('root@gmail.com', 'root', 'root', 1),
 ('wil@gmail.com', 'wil', 'asd', 3);
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `session`
+--
+
+CREATE TABLE `session` (
+  `id` int(32) NOT NULL,
+  `token` varchar(50) NOT NULL,
+  `expiry` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 --
 -- Indexes for dumped tables
 --
