@@ -74,6 +74,9 @@
                 Cookie full_name_cookie = new Cookie("full_name",full_name);
 
                 Integer session_age = Integer.valueOf(jsonObject.get("session_age").toString());
+                user_id_cookie.setMaxAge(session_age / 1000);
+                username_cookie.setMaxAge(session_age / 1000);
+                full_name_cookie.setMaxAge(session_age / 1000);
 
                 response.addCookie(user_id_cookie);
                 response.addCookie(username_cookie);
@@ -110,11 +113,10 @@
                 Object obj2 = parser.parse(s);
                 JSONObject jsonObject = (JSONObject) obj2;
                 Integer session_age = Integer.valueOf(jsonObject.get("session_age").toString());
-                tokenCookie.setMaxAge(session_age);
+                tokenCookie.setMaxAge(session_age / 1000);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            setUserInfo(response, token);
             setUserInfo(response, token);
         } else {
             redirectToLogin(request, response);
