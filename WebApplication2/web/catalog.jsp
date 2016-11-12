@@ -83,7 +83,7 @@
     <label for="filter" class="filter">by</label> <br>
     <input type="radio" name="filter" value="product" checked="">Product<br>
     <input type="radio" name="filter" value="store">Store<br>
-</form>
+</form> 
 <br>
 
     <%-- start web service invocation --%><hr/>
