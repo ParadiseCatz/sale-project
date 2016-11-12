@@ -93,7 +93,7 @@ public class Market {
 
     //Connect to database
     Connection conn=getConnection();
-    
+
     public static Connection getConnection(){
         //membuka koneksi ke database marketplace
         Connection conn = null;
@@ -105,7 +105,7 @@ public class Market {
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(Market.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         return conn;
     }
     /**
@@ -125,8 +125,8 @@ public class Market {
     @WebMethod(operationName = "listCatalog")
     @WebResult(name="Produk")
     public ArrayList<Produk> listCatalog(@WebParam(name = "userID") int userID,
-            @WebParam(name = "searchType") String searchType,
-            @WebParam(name = "searchKey") String searchKey){
+                                         @WebParam(name = "searchType") String searchType,
+                                         @WebParam(name = "searchKey") String searchKey){
         //TODO write your implementation code here:
         //TODO write your implementation code here:
         //TODO write your implementation code here:
@@ -144,12 +144,12 @@ public class Market {
         {
             if ("product".equals(searchType)){
                 query="SELECT * FROM barang where id_penjual<>? AND nama_barang LIKE '%"+searchKey+
-                        "%' ORDER BY waktu_ditambahkan DESC";	
+                        "%' ORDER BY waktu_ditambahkan DESC";
             }
             else
             {
                 query="SELECT * FROM barang where id_penjual<>? AND username LIKE '%"+searchKey+"%' "
-                        + "ORDER BY waktu_ditambahkan DESC";	
+                        + "ORDER BY waktu_ditambahkan DESC";
             }
         }
         PreparedStatement dbStatement = null;
@@ -178,7 +178,7 @@ public class Market {
             Logger.getLogger(Market.class.getName()).log(Level.SEVERE, null, ex);
         }
         return daftarCatalog;
-        
+
     }
 
     /**
@@ -191,9 +191,9 @@ public class Market {
      * @param foto
      */
     @WebMethod(operationName = "addProduct")
-    public Boolean addProduct(@WebParam(name = "userid") int userid, @WebParam(name = "username") 
+    public Boolean addProduct(@WebParam(name = "userid") int userid, @WebParam(name = "username")
             String username, @WebParam(name = "nama") String nama, @WebParam(name = "description")
-                    String description, @WebParam(name = "price") String price, @WebParam(name = "foto") String foto) {
+                                      String description, @WebParam(name = "price") String price, @WebParam(name = "foto") String foto) {
         try {
             authenticate();
         } catch (IOException e) {
@@ -229,7 +229,7 @@ public class Market {
                 dbStatement.setString(9, foto);
                 dbStatement.executeUpdate();
                 conn.commit();
-                
+
             } catch (SQLException ex) {
                 Logger.getLogger(Market.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -244,11 +244,11 @@ public class Market {
     public Boolean checkLike(@WebParam(name = "id_user") int id_user, @WebParam(name = "id_barang") int id_barang) {
         //TODO write your implementation code here:
         Boolean isLiked = null;
-            try {
-                Statement sqlStatement=conn.createStatement();
-            } catch (SQLException ex) {
-                Logger.getLogger(Market.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        try {
+            Statement sqlStatement=conn.createStatement();
+        } catch (SQLException ex) {
+            Logger.getLogger(Market.class.getName()).log(Level.SEVERE, null, ex);
+        }
         String query="SELECT * FROM user_liked WHERE id_user = '"+id_user+"' AND id_barang = '"+id_barang+"'";
         PreparedStatement dbStatement = null;
         try {
@@ -262,7 +262,7 @@ public class Market {
         } catch (SQLException ex) {
             Logger.getLogger(Market.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         try {
             if (!result.isBeforeFirst()){
                 isLiked=false;
@@ -283,7 +283,7 @@ public class Market {
     @WebMethod(operationName = "yourproduct")
     public ArrayList<Produk> yourproduct(@WebParam(name = "idpenjual") int idpenjual)  {
         //TODO write your implementation code here:
-        ArrayList<Produk> daftarProduk=new ArrayList<Produk>();     
+        ArrayList<Produk> daftarProduk=new ArrayList<Produk>();
         Statement stmt = null;
         try {
             stmt = conn.createStatement();
@@ -306,18 +306,18 @@ public class Market {
                 daftarProduk.add(new Produk(rs.getInt("id"),rs.getInt("id_penjual"),
                         rs.getString("username"), rs.getString("nama_barang"),rs.getLong("harga"),
                         rs.getString("deskripsi"),rs.getString("foto"),rs.getString("waktu_ditambahkan"),
-                        rs.getInt("jumlah_like"),rs.getInt("jumlah_dibeli")));                                       
+                        rs.getInt("jumlah_like"),rs.getInt("jumlah_dibeli")));
             }
         } catch (SQLException ex) {
             Logger.getLogger(Market.class.getName()).log(Level.SEVERE, null, ex);
         }
         return daftarProduk;
     }
-    
+
     @WebMethod(operationName = "sales")
     public ArrayList<transaction> sales(@WebParam(name = "idpenjual") int idpenjual)  {
         //TODO write your implementation code here:
-        ArrayList<transaction> daftarSales=new ArrayList<>();     
+        ArrayList<transaction> daftarSales=new ArrayList<>();
         Statement stmt = null;
         try {
             stmt = conn.createStatement();
@@ -341,47 +341,12 @@ public class Market {
                         rs.getInt("quantity"), rs.getString("cosignee"),rs.getString("full_address"),
                         rs.getInt("postal_code"),rs.getLong("phone_number"),rs.getLong("creditcard_number"),
                         rs.getInt("creditcard_verification"),rs.getString("nama_barang"),rs.getLong("harga_barang"),
-                        rs.getString("foto"),rs.getInt("id_penjual"),rs.getString("waktu_transaksi")));                                       
+                        rs.getString("foto"),rs.getInt("id_penjual"),rs.getString("waktu_transaksi")));
             }
         } catch (SQLException ex) {
             Logger.getLogger(Market.class.getName()).log(Level.SEVERE, null, ex);
         }
         return daftarSales;
     }
-    
-    @WebMethod(operationName = "sales")
-    public ArrayList<transaction> purchase(@WebParam(name = "idpembeli") int idpembeli)  {
-        //TODO write your implementation code here:
-        ArrayList<transaction> daftarPurchase=new ArrayList<>();     
-        Statement stmt = null;
-        try {
-            stmt = conn.createStatement();
-        } catch (SQLException ex) {
-            Logger.getLogger(Market.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        String query ;
-        query="SELECT * " +
-                "FROM `transaction` " +
-                "WHERE id_pembeli = " + idpembeli + ";";
-        ResultSet rs = null;
-        try {
-            rs = stmt.executeQuery(query);
-        } catch (SQLException ex) {
-            Logger.getLogger(Market.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
-            // Extract data from result set
-            while (rs.next()) {
-                daftarPurchase.add(new transaction(rs.getInt("id"),rs.getInt("id_pembeli"),
-                        rs.getInt("quantity"), rs.getString("cosignee"),rs.getString("full_address"),
-                        rs.getInt("postal_code"),rs.getLong("phone_number"),rs.getLong("creditcard_number"),
-                        rs.getInt("creditcard_verification"),rs.getString("nama_barang"),rs.getLong("harga_barang"),
-                        rs.getString("foto"),rs.getInt("id_penjual"),rs.getString("waktu_transaksi")));                                       
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(Market.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return daftarPurchase;
-    }
-    
+
 }
