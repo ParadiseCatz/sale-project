@@ -46,24 +46,24 @@
         wr.flush();
         wr.close();
         int responseCode = con.getResponseCode();
-//        out.println("Sending POST to " + url);
-//        out.println(urlParameters);
-//        out.println("Response Code : " + responseCode);
+        out.println("Sending POST to " + url);
+        out.println(urlParameters);
+        out.println("Response Code : " + responseCode);
         if(responseCode == 200){
             BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
             String s = br.readLine();
-//            out.println("Json = "+s);
+            out.println("Json = "+s);
             JSONParser parser = new JSONParser();
             try {
                 Object obj2 = parser.parse(s);
                 JSONObject jsonObject = (JSONObject) obj2;
                 String token = jsonObject.get("token").toString();
                 Cookie cookietoken = new Cookie("token",token);
-//                out.println("token = " + token);
+                out.println("token = " + token);
                 Integer session_age = Integer.valueOf(jsonObject.get("session_age").toString());
                 cookietoken.setMaxAge(session_age / 1000);
                 response.addCookie(cookietoken);
-//                out.println("date = " + session_age);
+                out.println("date = " + session_age);
                 //Redirect to Dashboard
                 String reqURL = String.valueOf(request.getRequestURL());
                 String redirectURL = reqURL.replaceFirst(request.getServletPath(), "/dashboard.jsp");
