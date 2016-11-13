@@ -59,12 +59,11 @@ public class UserInfo extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("application/json;charset=UTF-8");
         String token = request.getParameter("token");
-        if (token == null) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Bad Request!");
-            return;
-        }
         try {
-            Integer id = Auth.authenticate(token);
+            Integer id = null;
+            if (token != null) {
+                id = Auth.authenticate(token);
+            }
             if (id == null) {
                 String userId = request.getParameter("user_id");
                 if (userId != null) {
@@ -76,7 +75,7 @@ public class UserInfo extends HttpServlet {
             if (id != null) {
                 JSONObject obj = new JSONObject();
                 PreparedStatement pstmt = AppDatabase.getConnection().
-                        prepareStatement("SELECT username, full_name " +
+                        prepareStatement("SELECT username, full_name, full_address, postal_code, phone_number " +
                                 "FROM `data_pelanggan` " +
                                 "WHERE id = ?");
                 pstmt.setInt(1, id);
@@ -85,6 +84,9 @@ public class UserInfo extends HttpServlet {
                     obj.put("user_id", id);
                     obj.put("username", resultSet.getString("username"));
                     obj.put("full_name", resultSet.getString("full_name"));
+                    obj.put("full_address", resultSet.getString("full_address"));
+                    obj.put("postal_code", resultSet.getString("postal_code"));
+                    obj.put("phone_number", resultSet.getString("phone_number"));
                     obj.put("session_age", AppConfig.get("expired_time"));
                     obj.put("status", "ok");
                     response.getWriter().write(obj.toString());
