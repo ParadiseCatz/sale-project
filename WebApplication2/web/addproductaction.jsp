@@ -42,8 +42,7 @@
             }
         }
     }
-    imageString = "\"data:" + contentType + ";base64," +
-    Base64.getMimeEncoder().encodeToString(imgDataBa) + "\">";
+    imageString = "data:" + contentType + ";base64," + Base64.getMimeEncoder().encodeToString(imgDataBa);
 
     try {
         Integer user_id = Integer.valueOf(getCookie(request, "user_id").getValue());
