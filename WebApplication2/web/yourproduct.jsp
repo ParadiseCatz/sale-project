@@ -67,7 +67,9 @@
                     out.println(jumlah_beli +"  purchases<br><br>");
                     out.println("</span>");
                     out.println("<a href=\"editproduct.jsp\" class = \"edit\">EDIT</a>");
-                    out.println("<a href=\"delete.jsp\" class = \"delete\" onclick=\"return confirm('Apakah Anda yakin untuk menghapus barang?')\">DELETE</a>");
+                    String nama_barang = temp.getNamaBarang();
+                    int idbarang = temp.getId();
+                    out.println("<a href=\"delete.jsp?idbarang=" + idbarang +"&namabarang=" + nama_barang +"\" class = \"delete\" onclick=\"return confirm('Apakah Anda yakin untuk menghapus barang?')\">DELETE</a>");
                     out.println("</div>");
                     out.println("</div>");
                     out.println("<br><hr>");                

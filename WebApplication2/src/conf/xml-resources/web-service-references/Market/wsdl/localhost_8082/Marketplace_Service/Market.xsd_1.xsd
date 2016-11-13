@@ -8,6 +8,10 @@
 
 <xs:element name="checkLikeResponse" type="tns:checkLikeResponse"/>
 
+<xs:element name="delete" type="tns:delete"/>
+
+<xs:element name="deleteResponse" type="tns:deleteResponse"/>
+
 <xs:element name="hello" type="tns:hello"/>
 
 <xs:element name="helloResponse" type="tns:helloResponse"/>
@@ -15,6 +19,10 @@
 <xs:element name="listCatalog" type="tns:listCatalog"/>
 
 <xs:element name="listCatalogResponse" type="tns:listCatalogResponse"/>
+
+<xs:element name="purchase" type="tns:purchase"/>
+
+<xs:element name="purchaseResponse" type="tns:purchaseResponse"/>
 
 <xs:element name="sales" type="tns:sales"/>
 
@@ -95,6 +103,18 @@
 </xs:sequence>
 </xs:complexType>
 
+<xs:complexType name="delete">
+<xs:sequence>
+<xs:element name="idpenjual" type="xs:int"/>
+<xs:element name="idbarang" type="xs:int"/>
+<xs:element name="namabarang" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="deleteResponse">
+<xs:sequence/>
+</xs:complexType>
+
 <xs:complexType name="sales">
 <xs:sequence>
 <xs:element name="idpenjual" type="xs:int"/>
@@ -123,6 +143,18 @@
 <xs:element name="foto" type="xs:string"/>
 <xs:element name="id_penjual" type="xs:int"/>
 <xs:element name="waktu_transaksi" type="xs:string"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="purchase">
+<xs:sequence>
+<xs:element name="idpembeli" type="xs:int"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="purchaseResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:transaction" minOccurs="0" maxOccurs="unbounded"/>
 </xs:sequence>
 </xs:complexType>
 
