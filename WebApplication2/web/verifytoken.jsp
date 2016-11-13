@@ -1,13 +1,15 @@
 <%@ page import="app.AppConfig" %>
 <%@ page import="org.json.simple.JSONObject" %>
 <%@ page import="org.json.simple.parser.JSONParser" %>
+<%@ page import="javax.xml.ws.BindingProvider" %>
+<%@ page import="javax.xml.ws.handler.MessageContext" %>
 <%@ page import="java.io.BufferedReader" %>
 <%@ page import="java.io.DataOutputStream" %>
 <%@ page import="java.io.IOException" %>
 <%@ page import="java.io.InputStreamReader" %>
 <%@ page import="java.net.HttpURLConnection" %>
 <%@ page import="java.net.URL" %>
-<%@ page import="java.util.Objects" %><%--
+<%@ page import="java.util.*" %><%--
   Created by IntelliJ IDEA.
   User: anthony
   Date: 11/12/16
@@ -16,12 +18,43 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%!
+    market.Market_Service service = new market.Market_Service();
+    market.Market port = service.getMarketPort();
+%>
+
+<%!
+    public void setTokenOnSOAPHeader(String token) {
+        Map<String, Object> req_ctx = ((BindingProvider)port).getRequestContext();
+
+        Map<String, List<String>> headers = new HashMap<>();
+        headers.put("token", Collections.singletonList(token));
+        req_ctx.put(MessageContext.HTTP_REQUEST_HEADERS, headers);
+    }
+%>
+
+<%!
     public void redirectToLogin(HttpServletRequest request, HttpServletResponse response){
         String reqURL = String.valueOf(request.getRequestURL());
         String redirectURL = reqURL.replaceFirst(request.getServletPath(), "/login.jsp");
         response.setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY);
         response.setHeader("Location", redirectURL);
     }
+
+    public void redirectTo(HttpServletRequest request, JspWriter out, String location){
+        String reqURL = String.valueOf(request.getRequestURL());
+        String redirectURL = reqURL.replaceFirst(request.getServletPath(), location);
+        try {
+            out.println(" <script>\n" +
+                    "    window.onload = function() {\n" +
+                    "    location.href = \"" + redirectURL + "\"\n" +
+                    "};\n" +
+                    "</script>");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 
 %>
 
@@ -118,10 +151,12 @@
                 e.printStackTrace();
             }
             setUserInfo(response, token);
+            setTokenOnSOAPHeader(token);
         } else {
             redirectToLogin(request, response);
         }
     } else {
         redirectToLogin(request, response);
     }
+
 %>

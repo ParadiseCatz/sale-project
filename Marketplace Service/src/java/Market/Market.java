@@ -11,15 +11,16 @@ import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebResult;
 import javax.jws.WebService;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.xml.ws.WebServiceContext;
 import javax.xml.ws.handler.MessageContext;
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Objects;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,78 +32,42 @@ import java.util.logging.Logger;
 @WebService(serviceName = "Market")
 public class Market {
 
-
-
     @Resource
     private WebServiceContext context;
 
-    private Cookie getCookie(HttpServletRequest request, String key){
-        Cookie[] cookies;
-        cookies = request.getCookies();
-        if( cookies != null ) {
-            for (Cookie cookie : cookies) {
-                if (Objects.equals(cookie.getName(), key)) {
-                    return cookie;
-                }
-            }
-        }
-        return null;
-    }
-
     private boolean authenticate() throws IOException {
-        MessageContext messageContext = context.getMessageContext();
-        HttpServletRequest request = (HttpServletRequest) messageContext.get(MessageContext.SERVLET_REQUEST);
-        HttpServletResponse response = (HttpServletResponse) messageContext.get(MessageContext.SERVLET_RESPONSE);
-        System.err.println(getCookie(request, "token") + " ASDASDASD");
+        MessageContext mctx = context.getMessageContext();
 
-        String reqURL = String.valueOf(request.getRequestURL());
-        String redirectURL = reqURL.replaceFirst(request.getServletPath(), "/login.jsp");
-        response.setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY);
-        response.setHeader("Location", redirectURL);
-//        String url = AppConfig.get("identity_service_url") + "/Auth";
-//        URL obj = new URL(url);
-//        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-//        //add request header
-//        con.setRequestMethod("POST");
-//        con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
-//        String urlParameters = "token=" + token;
-//        con.setDoOutput(true);
-//        DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-//        wr.writeBytes(urlParameters);
-//        wr.flush();
-//        wr.close();
-//        int responseCode = con.getResponseCode();
-//        if (responseCode == 200) {
-//            BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
-//            String s = br.readLine();
-//            JSONParser parser = new JSONParser();
-//            try {
-//                Object obj2 = parser.parse(s);
-//                JSONObject jsonObject = (JSONObject) obj2;
-//                Integer session_age = Integer.valueOf(jsonObject.get("session_age").toString());
-//                tokenCookie.setMaxAge(session_age / 1000);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//            setUserInfo(response, token);
-//        } else {
-//            redirectToLogin(request, response);
-//        }
-        return true;
+        //get detail from request headers
+        Map http_headers = (Map) mctx.get(MessageContext.HTTP_REQUEST_HEADERS);
+        List tokenList = (List) http_headers.get("token");
+        String token = tokenList.get(0).toString();
+        String url = AppConfig.get("identity_service_url") + "/Auth";
+        URL obj = new URL(url);
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        //add request header
+        con.setRequestMethod("POST");
+        con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+        String urlParameters = "token=" + token;
+        con.setDoOutput(true);
+        DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+        wr.writeBytes(urlParameters);
+        wr.flush();
+        wr.close();
+        int responseCode = con.getResponseCode();
+        return responseCode == 200;
     }
 
     //Connect to database
     Connection conn=getConnection();
 
-    public static Connection getConnection(){
+    private static Connection getConnection(){
         //membuka koneksi ke database marketplace
         Connection conn = null;
         try {
             Class.forName("com.mysql.jdbc.Driver");
             conn=DriverManager.getConnection(AppConfig.get("db_url"), AppConfig.get("db_user"), AppConfig.get("db_pass"));
-        } catch (SQLException ex) {
-            Logger.getLogger(Market.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClassNotFoundException ex) {
+        } catch (SQLException | ClassNotFoundException ex) {
             Logger.getLogger(Market.class.getName()).log(Level.SEVERE, null, ex);
         }
 
@@ -127,9 +92,6 @@ public class Market {
     public ArrayList<Produk> listCatalog(@WebParam(name = "userID") int userID,
                                          @WebParam(name = "searchType") String searchType,
                                          @WebParam(name = "searchKey") String searchKey){
-        //TODO write your implementation code here:
-        //TODO write your implementation code here:
-        //TODO write your implementation code here:
         ArrayList<Produk> daftarCatalog=new ArrayList<Produk>();
         try {
             Statement sqlStatement=conn.createStatement();
@@ -193,13 +155,14 @@ public class Market {
     @WebMethod(operationName = "addProduct")
     public Boolean addProduct(@WebParam(name = "userid") int userid, @WebParam(name = "username")
             String username, @WebParam(name = "nama") String nama, @WebParam(name = "description")
-                                      String description, @WebParam(name = "price") String price, @WebParam(name = "foto") String foto) {
+                                      String description, @WebParam(name = "price") String price, @WebParam(name = "foto") String foto) throws Exception{
         try {
-            authenticate();
+            if (!authenticate()) {
+                throw new Exception("ASD");
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        //TODO write your implementation code here:
         if ((nama.isEmpty()) || (description.isEmpty()) || (price.isEmpty()) ||
                 (foto.isEmpty()) || (userid==0) || (username.isEmpty())){
             return false;
@@ -242,7 +205,6 @@ public class Market {
      */
     @WebMethod(operationName = "checkLike")
     public Boolean checkLike(@WebParam(name = "id_user") int id_user, @WebParam(name = "id_barang") int id_barang) {
-        //TODO write your implementation code here:
         Boolean isLiked = null;
         try {
             Statement sqlStatement=conn.createStatement();
@@ -264,13 +226,7 @@ public class Market {
         }
 
         try {
-            if (!result.isBeforeFirst()){
-                isLiked=false;
-            }
-            else
-            {
-                isLiked=true;
-            }
+            isLiked = result.isBeforeFirst();
         } catch (SQLException ex) {
             Logger.getLogger(Market.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -282,7 +238,6 @@ public class Market {
      */
     @WebMethod(operationName = "yourproduct")
     public ArrayList<Produk> yourproduct(@WebParam(name = "idpenjual") int idpenjual)  {
-        //TODO write your implementation code here:
         ArrayList<Produk> daftarProduk=new ArrayList<Produk>();
         Statement stmt = null;
         try {
@@ -316,7 +271,6 @@ public class Market {
 
     @WebMethod(operationName = "sales")
     public ArrayList<transaction> sales(@WebParam(name = "idpenjual") int idpenjual)  {
-        //TODO write your implementation code here:
         ArrayList<transaction> daftarSales=new ArrayList<>();
         Statement stmt = null;
         try {

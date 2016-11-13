@@ -29,7 +29,7 @@
                 var href = obj.contentWindow.location.href;
                 var src = href.substr(href.lastIndexOf('/') + 1);
                 if (src == "login.jsp") {
-                    location.reload();
+                    location.href = "login.jsp";
                 }
                 if (src == navpages[x]) {
                     button.className += "active";

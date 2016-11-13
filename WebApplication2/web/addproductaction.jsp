@@ -12,37 +12,53 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ include file="verifytoken.jsp" %>
 <%
     Collection<Part> parts = request.getParts();
     String imageString = null;
     String contentType = null;
     byte[] imgDataBa = null;
-    boolean switchFile = false;
+    String name = null;
+    String description = null;
+    String price = null;
     for (Part part : parts) {
         InputStream in = part.getInputStream();
         BufferedReader br = new BufferedReader(new InputStreamReader(in));
         String s;
-        out.println(part.getName() + ": \n");
+        String value = "";
         if (Objects.equals(part.getName(), "uploadedfile")) {
             contentType = part.getContentType();
-            switchFile = true;
-        }
-        if (switchFile) {
             imgDataBa = new byte[(int)part.getSize()];
             DataInputStream dataIs = new DataInputStream(part.getInputStream());
             dataIs.readFully(imgDataBa);
-            switchFile = false;
         } else {
             while( (s = br.readLine()) != null) {
-                out.println(s + "\n");
+                value = value + s;
+            }
+            switch (part.getName()) {
+                case "name" : name = value; break;
+                case "Description" : description = value; break;
+                case "price" : price = value; break;
             }
         }
     }
-    out.println(contentType);
-//    out.println(imageString);
-    out.println(Base64.getEncoder().encodeToString(imgDataBa));
-    out.print("<img src=\"data:" + contentType + ";base64,");
-    out.print(Base64.getMimeEncoder().encodeToString(imgDataBa) + "\">");
-    out.println("ASDASD");
+    imageString = "\"data:" + contentType + ";base64," +
+    Base64.getMimeEncoder().encodeToString(imgDataBa) + "\">";
+
+    try {
+        Integer user_id = Integer.valueOf(getCookie(request, "user_id").getValue());
+        String username = getCookie(request, "username").getValue();
+
+        boolean result = port.addProduct(user_id, username, name, description, price, imageString);
+
+        if (result) {
+            redirectTo(request, out, "/catalog.jsp");
+        } else {
+            redirectTo(request, out, "/login.jsp");
+        }
+    } catch (Exception e) {
+        redirectTo(request, out, "/login.jsp");
+        e.printStackTrace();
+    }
 
 %>
